@@ -51,9 +51,6 @@ export function ExerciseCard({
                 <p className="text-base font-semibold leading-tight">
                   {exercise.name}
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  Tap to view cues + rep scheme
-                </p>
               </div>
             </div>
             <span className="rounded-full border-2 border-border bg-secondary px-4 py-1 text-xs font-semibold uppercase tracking-wide text-border">
@@ -65,11 +62,7 @@ export function ExerciseCard({
               <StatBlock label="Sets" value={exercise.sets} />
               <StatBlock label="Reps" value={exercise.reps} />
             </div>
-            {exercise.note ? (
-              <p className="mt-4 rounded-2xl border-2 border-border bg-white px-4 py-3 text-xs text-foreground">
-                Coach cue: {exercise.note}
-              </p>
-            ) : null}
+            
           </AccordionContent>
         </AccordionItem>
       </Accordion>
