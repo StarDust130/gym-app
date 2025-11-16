@@ -1,20 +1,27 @@
-## Gym Workout MVP
+## Gen Z Gym Companion
 
-Mobile-first gym companion that turns a static beginner PDF into an adaptive Next.js experience. The app greets the user, remembers their onboarding details, and automatically adjusts sets/reps based on how many weeks they have been grinding.
+A mobile-first Next.js experience that turns any beginner PDF into a vibrant, animated workout tracker. The current MVP simulates the "AI" backend with a mock JSON response but preserves the full upload flow so we can swap in a real service later.
 
 ### Stack
 
 - Next.js 16 (App Router) + React 19
-- Tailwind CSS v4, shadcn/ui, lucide-react icons
-- Framer Motion for transitions, date-fns for time math
+- Tailwind CSS v4 + shadcn/ui components + lucide-react icons
+- Framer Motion for page/component animations
+- date-fns for streaks, timestamps, and friendly dates
+
+### Architecture
+
+- `app/page.tsx` only decides between onboarding and dashboard states via `useWorkoutStore`.
+- `app/lib/data.ts` hosts the mock AI JSON; swap with a real API response without touching UI code.
+- `app/lib/hooks.ts` owns localStorage hydration, streak resets, and the `toggleComplete` checklist logic.
+- `app/components/*` break the UI into focused pieces (`Onboarding`, `Dashboard`, `StatsGrid`, `WorkoutList`, `ExerciseCard`).
 
 ### Features
 
-- Multi-step onboarding with name + start date persisted in `localStorage`
-- Dark, "Gen Z" inspired dashboard that prioritizes mobile layouts (`max-w-lg mx-auto`)
-- Day-aware workout plan with plan aliases (Thu=Mon, etc.) baked into a `workoutPlan` const
-- Exercise cards that animate in and automatically pick the correct set/rep range per week
-- Rest-day messaging and subtle experience chips (Beginner → Beast Mode)
+- Two-step onboarding (name + PDF upload) with a simulated AI parsing delay.
+- Neon-inspired dashboard header, stat grid, and accordion-based workout list with animated checkboxes.
+- Daily progress + streak tracking, with completions auto-clearing when the calendar date changes.
+- Rest-day detection that swaps the workout list for a playful recovery card.
 
 ### Run It Locally
 
@@ -23,4 +30,4 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` on a phone or narrow browser window for the intended experience. Update `app/page.tsx` to tweak copy, exercises, or animations.\*\*\* End Patch
+Open `http://localhost:3000` on a phone or narrow browser window for the intended experience. To reset the experience, clear `localStorage` (key: `gym-app-store`) or use the helper inside `useWorkoutStore`.\*\*\* End Patch
