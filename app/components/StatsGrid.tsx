@@ -26,7 +26,7 @@ export function StatsGrid(props: StatsGridProps) {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-                Progress today
+                Workout Completed
               </p>
               <p className="text-3xl font-semibold text-primary">
                 {Math.round(props.progressPercent)}%

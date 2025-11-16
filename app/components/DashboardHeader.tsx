@@ -40,7 +40,7 @@ export function DashboardHeader({
             </span>
             <div className="space-y-2 text-balance">
               <h2 className="text-xl font-semibold leading-tight items-center">
-                <span className="bg-gradient-to-r from-rose-400 via-orange-300 to-amber-200 bg-clip-text text-2xl font-black text-transparent">
+                <span className="bg-gradient-to-r from-rose-600 via-rose-400 to-red-500 bg-clip-text text-2xl font-black text-transparent">
                   {name}
                 </span>
                 ,{" "}
