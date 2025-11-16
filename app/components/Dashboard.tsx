@@ -139,47 +139,55 @@ export function Dashboard({
 
             <TabsContent value="week" className="mt-0">
               <motion.div
-                key="week"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="space-y-4 rounded-2xl bg-secondary/20 p-4"
+              key="week"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="space-y-4 rounded-2xl bg-secondary/20 p-4"
               >
-                <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                    Week glance
-                  </p>
-                  <h4 className="text-lg font-semibold text-foreground">
-                    Stay in rhythm
-                  </h4>
-                </div>
-                <div className="space-y-3">
-                  {upcomingBlocks.map(({ day, block }) => (
-                    <motion.div
-                      key={day}
-                      whileHover={{ y: -2 }}
-                      className="flex items-center justify-between rounded-2xl border border-border bg-white px-4 py-3"
-                    >
-                      <div>
-                        <p className="text-sm font-semibold">{day}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {day === todayLabel ? "Today" : "Next"}
-                        </p>
-                      </div>
-                      <span
-                        className={`rounded-full border border-border px-3 py-1 text-xs font-semibold ${
-                          block === "Rest Day" ? "bg-muted" : "bg-accent/40"
-                        }`}
-                      >
-                        {block}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-                <p className="rounded-2xl border border-border bg-white px-4 py-3 text-sm font-medium">
-                  Next deep rest:{" "}
-                  <span className="text-primary">{nextRestDay}</span>.
-                </p>
+              <div className="space-y-1">
+              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+              Week glance
+              </p>
+              <h4 className="text-lg font-semibold text-foreground">
+              Stay in rhythm
+              </h4>
+              </div>
+              <div className="space-y-3">
+              {weekDays.map((day) => {
+              const block = workoutPlan.schedule[day] ?? "Rest Day";
+              const isToday = day === todayLabel;
+              return (
+              <motion.div
+              key={day}
+              whileHover={{ y: -2 }}
+              className={`flex items-center justify-between rounded-2xl border px-4 py-3 shadow-md ${
+              isToday
+                ? "border-primary bg-gradient-to-r from-primary/20 to-primary/10 shadow-primary/20 ring-2 ring-primary/30"
+                : "border-border bg-white"
+              }`}
+              >
+              <div>
+              <p className={`text-sm font-semibold ${isToday ? "text-primary" : ""}`}>{day}</p>
+              <p className="text-xs text-muted-foreground">
+              {isToday ? "Today 🔥" : ""}
+              </p>
+              </div>
+              <span
+              className={`rounded-full border border-border px-3 py-1 text-xs font-semibold ${
+              block === "Rest Day" ? "bg-muted" : "bg-accent/40"
+              }`}
+              >
+              {block}
+              </span>
+              </motion.div>
+              );
+              })}
+              </div>
+              <p className="rounded-2xl border border-border bg-white px-4 py-3 text-sm font-medium">
+              Next deep rest:{" "}
+              <span className="text-primary">{nextRestDay}</span>.
+              </p>
               </motion.div>
             </TabsContent>
           </Tabs>
