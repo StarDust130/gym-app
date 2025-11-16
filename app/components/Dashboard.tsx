@@ -97,43 +97,45 @@ export function Dashboard({
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="space-y-6"
         >
-          <StatsGrid
-            focus={focus}
-            progressPercent={progressPercent}
-            streakDays={streakDays}
-            workoutsThisWeek={workoutsThisWeek}
-            nextRestDay={nextRestDay}
-          />
+          {todayLabel !== "Sunday" && (
+            <StatsGrid
+              focus={focus}
+              progressPercent={progressPercent}
+              streakDays={streakDays}
+              workoutsThisWeek={workoutsThisWeek}
+              nextRestDay={nextRestDay}
+            />
+          )}
 
           <Tabs defaultValue="today" className="space-y-4">
             <TabsList className="flex w-full justify-start gap-2 rounded-full bg-secondary/30 p-1 sm:w-fit">
               <TabsTrigger
-                value="today"
-                className="flex-1 rounded-full px-4 py-1 text-sm sm:flex-none"
+          value="today"
+          className="flex-1 rounded-full px-4 py-1 text-sm sm:flex-none"
               >
-                Today
+          Today
               </TabsTrigger>
               <TabsTrigger
-                value="week"
-                className="flex-1 rounded-full px-4 py-1 text-sm sm:flex-none"
+          value="week"
+          className="flex-1 rounded-full px-4 py-1 text-sm sm:flex-none"
               >
-                Week
+          Week
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="today" className="mt-0">
               <motion.div
-                key="today"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+          key="today"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
               >
-                <WorkoutList
-                  exercises={exercisesToday}
-                  completedIds={completedExercises}
-                  dayLabel={todayLabel}
-                  onToggle={toggleComplete}
-                />
+          <WorkoutList
+            exercises={exercisesToday}
+            completedIds={completedExercises}
+            dayLabel={todayLabel}
+            onToggle={toggleComplete}
+          />
               </motion.div>
             </TabsContent>
 
@@ -163,8 +165,8 @@ export function Dashboard({
               whileHover={{ y: -2 }}
               className={`flex items-center justify-between rounded-2xl border px-4 py-3 shadow-md ${
               isToday
-                ? "border-primary bg-gradient-to-r from-primary/20 to-primary/10 shadow-primary/20 ring-2 ring-primary/30"
-                : "border-border bg-white"
+          ? "border-primary bg-gradient-to-r from-primary/20 to-primary/10 shadow-primary/20 ring-2 ring-primary/30"
+          : "border-border bg-white"
               }`}
               >
               <div>
