@@ -42,11 +42,13 @@ export function ExerciseCard({
         >
           <AccordionTrigger className="flex flex-col gap-3 px-5 py-4 text-left sm:flex-row sm:items-center">
             <div className="flex w-full items-start gap-3">
-              <Checkbox
-                checked={completed}
-                onCheckedChange={onToggle}
-                className="mt-1 size-6 rounded-full border-[3px] border-border bg-white data-[state=checked]:bg-primary data-[state=checked]:text-white"
-              />
+              <div onClick={(e) => e.stopPropagation()}>
+                <Checkbox
+                  checked={completed}
+                  onCheckedChange={onToggle}
+                  className="mt-1 size-6 rounded-full border-[3px] border-border bg-white data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                />
+              </div>
               <div className="flex-1 text-left">
                 <p className="text-base font-semibold leading-tight">
                   {exercise.name}
