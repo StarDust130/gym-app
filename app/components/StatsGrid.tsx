@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -7,9 +5,10 @@ import { Progress } from "@/components/ui/progress";
 interface StatsGridProps {
   focus: string;
   progressPercent: number;
-  streakDays: number;
   workoutsThisWeek: number;
   nextRestDay: string;
+  todayExercisesDone: number;
+  todayExercisesTotal: number;
 }
 
 export function StatsGrid(props: StatsGridProps) {
@@ -33,21 +32,25 @@ export function StatsGrid(props: StatsGridProps) {
               </p>
             </div>
             <motion.div
-              key={props.streakDays}
-              initial={{ scale: 0.8, opacity: 0 }}
+              key={`${props.todayExercisesDone}-${props.todayExercisesTotal}`}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="rounded-full border border-border bg-gradient-to-r from-primary/10 to-primary/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]"
+              transition={{ type: "spring", stiffness: 280, damping: 20 }}
+              className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-2.5 py-1.5 text-xs font-semibold text-foreground shadow-[3px_3px_0_rgba(0,0,0,0.15)]"
             >
-              Streak · {props.streakDays}d
+              <span className="text-lg leading-none">🐥</span>
+              <span className="tracking-wide">
+              {props.todayExercisesDone}
+              <span className="mx-0.5 text-muted-foreground">/</span>
+              {props.todayExercisesTotal}
+              </span>
             </motion.div>
           </div>
 
           <Progress
             value={props.progressPercent}
-            className="h-1.5 border border-border bg-transparent [&>div]:bg-gradient-to-r [&>div]:from-primary [&>div]:to-primary/60"
+            className="h-1.5 border border-border bg-transparent [&>div]:bg-linear-to-r [&>div]:from-primary [&>div]:to-primary/60"
           />
-
         </CardContent>
       </Card>
     </motion.div>

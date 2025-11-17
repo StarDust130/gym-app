@@ -90,9 +90,13 @@ export function Dashboard({
             <StatsGrid
               focus={focus}
               progressPercent={progressPercent}
-              streakDays={streakDays}
               workoutsThisWeek={workoutsThisWeek}
               nextRestDay={nextRestDay}
+              todayExercisesDone={completedExercises.filter((id) =>
+                exercisesToday.some((ex) => ex.id === id)
+              ).length}
+              todayExercisesTotal={exercisesToday.length}
+
             />
           )}
 
