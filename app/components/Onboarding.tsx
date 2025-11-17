@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, type ChangeEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Loader2, UploadCloud } from "lucide-react";
