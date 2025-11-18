@@ -194,7 +194,6 @@ export function Dashboard({
           planName={workoutPlan.planName}
           onOpenSettings={() => setSettingsOpen(true)}
         />
-
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -309,7 +308,6 @@ export function Dashboard({
             </TabsContent>
           </Tabs>
         </motion.section>
-
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
