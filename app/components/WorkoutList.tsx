@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import type { WorkoutExercise } from "@/app/lib/data";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,6 +19,15 @@ export function WorkoutList({
   dayLabel,
   onToggle,
 }: WorkoutListProps) {
+  const completedSet = new Set(completedIds);
+
+  // Sort: Unfinished first, then finished
+  const sortedExercises = [...exercises].sort((a, b) => {
+    const aDone = completedSet.has(a.id);
+    const bDone = completedSet.has(b.id);
+    return Number(aDone) - Number(bDone);
+  });
+
   if (exercises.length === 0) {
     return (
       <motion.div
@@ -40,46 +49,43 @@ export function WorkoutList({
     );
   }
 
-  const completedSet = new Set(completedIds);
-  const sortedExercises = [...exercises].sort((a, b) => {
-    const aDone = completedSet.has(a.id);
-    const bDone = completedSet.has(b.id);
-    return Number(aDone) - Number(bDone);
-  });
-
   return (
     <motion.div
+      // Layout prop here handles the list reordering animation
       layout
       className="space-y-2.5 sm:space-y-3 md:space-y-4 w-full max-w-3xl mx-auto px-2 sm:px-4 md:px-6 pb-6 sm:pb-8"
     >
-      {sortedExercises.map((exercise, index) => {
-        const completed = completedSet.has(exercise.id);
-        return (
-          <motion.div
-            key={exercise.id}
-            layoutId={exercise.id}
-            layout="position"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              layout: {
-                type: "spring",
-                stiffness: 350,
-                damping: 30
-              },
-              opacity: { duration: 0.2 },
-              delay: index * 0.05
-            }}
-          >
-            <ExerciseCard
-              exercise={exercise}
-              completed={completed}
-              onToggle={() => onToggle(exercise.id)}
-              delay={index}
-            />
-          </motion.div>
-        );
-      })}
+      <AnimatePresence mode="popLayout" initial={false}>
+        {sortedExercises.map((exercise, index) => {
+          const completed = completedSet.has(exercise.id);
+          return (
+            <motion.div
+              key={exercise.id}
+              layout="position"
+              // Using layoutId creates a smooth transition when items swap places
+              layoutId={exercise.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{
+                layout: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                },
+                opacity: { duration: 0.2 },
+              }}
+            >
+              <ExerciseCard
+                exercise={exercise}
+                completed={completed}
+                onToggle={() => onToggle(exercise.id)}
+                delay={index}
+              />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
     </motion.div>
   );
 }

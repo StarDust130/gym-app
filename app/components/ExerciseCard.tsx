@@ -36,7 +36,6 @@ export function ExerciseCard({
   );
 
   const loadTip = useCallback(async () => {
-    // Don't fetch if we already have data or are loading
     if (tip || loadingTip) return;
 
     if (typeof window !== "undefined") {
@@ -61,8 +60,7 @@ export function ExerciseCard({
 
       const data = (await res.json()) as { ok: boolean; tip?: string };
       if (!data.ok || !data.tip) {
-        // Don't throw error here, just set empty so UI knows nothing to show
-        setTip("");
+        setTip(""); // Empty string indicates "fetched but empty"
         return;
       }
 
@@ -91,16 +89,20 @@ export function ExerciseCard({
       .filter(Boolean);
   }, [tip]);
 
-  // LOGIC FIX: Only show the section if loading, error, or we actually have lines
-  const shouldShowTips = loadingTip || tipError || tipLines.length > 0;
+  // FIX: Remove `loadingTip` from here.
+  // The box will ONLY show if we have actual lines or an error.
+  // This prevents the box from appearing briefly and disappearing if data is empty.
+  const shouldShowTips = tipLines.length > 0 || !!tipError;
 
   return (
     <motion.div
-      layout
+      // LAG FIX: Removed `layout` prop here.
+      // The parent WorkoutList handles the position reordering.
+      // Including `layout` here causes conflicts with Accordion height animation.
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: delay * 0.03 }}
-      whileHover={{ scale: 1.01 }}
+      whileHover={{ scale: 1.005 }} // Reduced scale slightly for smoother feel
       className="rounded-3xl"
     >
       <Accordion
@@ -110,11 +112,11 @@ export function ExerciseCard({
       >
         <AccordionItem
           value={exercise.id}
-          className={`overflow-hidden rounded-3xl border-2 border-border bg-white shadow-[4px_4px_0_var(--border)] transition ${
-            completed ? "opacity-70" : ""
+          className={`overflow-hidden rounded-3xl border-2 border-border bg-white shadow-[4px_4px_0_var(--border)] transition-opacity duration-300 ${
+            completed ? "opacity-60" : "opacity-100"
           }`}
         >
-          <AccordionTrigger className="flex flex-col gap-3 px-5 py-4 text-left sm:flex-row sm:items-center">
+          <AccordionTrigger className="flex flex-col gap-3 px-5 py-4 text-left sm:flex-row sm:items-center hover:no-underline">
             <div className="flex w-full items-start gap-3">
               <div onClick={(e) => e.stopPropagation()}>
                 <Checkbox
@@ -129,7 +131,7 @@ export function ExerciseCard({
                 </p>
               </div>
             </div>
-            <span className="rounded-full border-2 border-border bg-secondary px-4 py-1 text-xs font-semibold uppercase tracking-wide text-border">
+            <span className="shrink-0 rounded-full border-2 border-border bg-secondary px-4 py-1 text-xs font-semibold uppercase tracking-wide text-border">
               {exercise.sets} sets · {exercise.reps} reps
             </span>
           </AccordionTrigger>
@@ -140,38 +142,28 @@ export function ExerciseCard({
               <StatBlock label="Reps" value={exercise.reps.toString()} />
             </div>
 
-            {/* LAG FIX: Removed inner `isOpen &&` check. 
-                Also removed inner motion.div animation properties that fight 
-                with Accordion height calculation. */}
             {shouldShowTips && (
-              <div className="mt-5 animate-in fade-in zoom-in-95 duration-300 rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]">
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
-                  Quick tips
-                </p>
-
-                {loadingTip && (
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Loading quick tips...
+              // Added simple fade-in animation for when content arrives
+              <div className="mt-5 animate-in fade-in slide-in-from-top-2 duration-500 rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]">
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+                    Quick tips
                   </p>
-                )}
+                </div>
 
-                {tipError && !loadingTip && (
-                  <p className="mt-2 text-sm font-medium text-destructive">
+                {tipError ? (
+                  <p className="text-sm font-medium text-destructive">
                     {tipError}
                   </p>
-                )}
-
-                {!loadingTip && !tipError && tipLines.length > 0 && (
-                  <ul className="mt-3 space-y-2 text-sm font-semibold text-foreground">
+                ) : (
+                  <ul className="space-y-2 text-sm font-semibold text-foreground">
                     {tipLines.map((line, index) => (
                       <li
                         key={`${exercise.id}-tip-${index}`}
-                        className="flex items-start gap-2 rounded-2xl border border-border/60 bg-secondary/30 px-3 py-2 shadow-[2px_2px_0_var(--border)]"
+                        className="flex items-start gap-2 rounded-2xl border border-border/60 bg-secondary/30 px-3 py-2"
                       >
-                        <span className="mt-1 inline-block size-1.5 rounded-full bg-foreground" />
-                        <span className="flex-1 text-sm leading-snug">
-                          {line}
-                        </span>
+                        <span className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-foreground" />
+                        <span className="leading-snug">{line}</span>
                       </li>
                     ))}
                   </ul>
