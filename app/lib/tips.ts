@@ -8,11 +8,12 @@ export async function getExerciseTip(name: string) {
     messages: [
       {
         role: "user",
-        content: `Give exactly 2 beginner-friendly bullet tips for the exercise "${name}".
+        content: `Give exactly 3 beginner-friendly bullet tips for the exercise "${name}".
 Each bullet must:
-- end with an emoji followed by 4-10 simple words that explain how to perform it.
-- avoid technical jargon and keep it casual.
-Return plain text with each bullet on its own line starting with "- ". No intro or outro. use super simple english and emoji too.`,
+- use 5-10 super simple words (with emoji 1-2 cool emoji).
+- mention the machine or body position if it matters.
+- explain the action in everyday language.
+Return plain text with each bullet on its own line starting with "- ". No intro or outro.`,
       },
     ],
     max_completion_tokens: 80,

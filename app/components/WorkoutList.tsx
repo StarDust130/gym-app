@@ -26,7 +26,7 @@ export function WorkoutList({
         animate={{ opacity: 1, y: 0 }}
         className="w-full px-3 sm:px-6"
       >
-        <Card className="border-none bg-gradient-to-br from-primary/15 via-background to-background shadow-lg rounded-2xl sm:rounded-3xl overflow-hidden">
+        <Card className="border-none bg-linear-to-br from-primary/15 via-background to-background shadow-lg rounded-2xl sm:rounded-3xl overflow-hidden">
           <CardContent className="text-center px-4 py-8 sm:px-6 sm:py-12 space-y-2 sm:space-y-3">
             <p className="text-xl sm:text-2xl font-semibold text-foreground leading-tight">
               {dayLabel} reset mode
@@ -57,13 +57,17 @@ export function WorkoutList({
         return (
           <motion.div
             key={exercise.id}
-            layout
+            layoutId={exercise.id}
+            layout="position"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
-              type: "spring", 
-              duration: 0.45, 
-              bounce: 0.2,
+              layout: {
+                type: "spring",
+                stiffness: 350,
+                damping: 30
+              },
+              opacity: { duration: 0.2 },
               delay: index * 0.05
             }}
           >

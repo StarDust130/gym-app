@@ -36,6 +36,7 @@ export function ExerciseCard({
   );
 
   const loadTip = useCallback(async () => {
+    // Don't fetch if we already have data or are loading
     if (tip || loadingTip) return;
 
     if (typeof window !== "undefined") {
@@ -60,7 +61,9 @@ export function ExerciseCard({
 
       const data = (await res.json()) as { ok: boolean; tip?: string };
       if (!data.ok || !data.tip) {
-        throw new Error("Missing tip content");
+        // Don't throw error here, just set empty so UI knows nothing to show
+        setTip("");
+        return;
       }
 
       setTip(data.tip);
@@ -84,9 +87,12 @@ export function ExerciseCard({
     if (!tip) return [];
     return tip
       .split("\n")
-      .map((line) => line.trim())
+      .map((line) => line.trim().replace(/^[-•]\s*/, ""))
       .filter(Boolean);
   }, [tip]);
+
+  // LOGIC FIX: Only show the section if loading, error, or we actually have lines
+  const shouldShowTips = loadingTip || tipError || tipLines.length > 0;
 
   return (
     <motion.div
@@ -127,38 +133,50 @@ export function ExerciseCard({
               {exercise.sets} sets · {exercise.reps} reps
             </span>
           </AccordionTrigger>
+
           <AccordionContent className="border-t-2 border-dashed border-border/50 bg-muted/40 px-5 py-5">
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <StatBlock label="Sets" value={exercise.sets} />
-              <StatBlock label="Reps" value={exercise.reps} />
+              <StatBlock label="Sets" value={exercise.sets.toString()} />
+              <StatBlock label="Reps" value={exercise.reps.toString()} />
             </div>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-5 rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]"
-              >
+
+            {/* LAG FIX: Removed inner `isOpen &&` check. 
+                Also removed inner motion.div animation properties that fight 
+                with Accordion height calculation. */}
+            {shouldShowTips && (
+              <div className="mt-5 animate-in fade-in zoom-in-95 duration-300 rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]">
                 <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
                   Quick tips
                 </p>
+
                 {loadingTip && (
                   <p className="mt-2 text-sm text-muted-foreground">
                     Loading quick tips...
                   </p>
                 )}
+
                 {tipError && !loadingTip && (
                   <p className="mt-2 text-sm font-medium text-destructive">
                     {tipError}
                   </p>
                 )}
+
                 {!loadingTip && !tipError && tipLines.length > 0 && (
-                  <ul className="mt-2 space-y-2 text-sm font-medium text-foreground">
+                  <ul className="mt-3 space-y-2 text-sm font-semibold text-foreground">
                     {tipLines.map((line, index) => (
-                      <li key={`${exercise.id}-tip-${index}`}>{line}</li>
+                      <li
+                        key={`${exercise.id}-tip-${index}`}
+                        className="flex items-start gap-2 rounded-2xl border border-border/60 bg-secondary/30 px-3 py-2 shadow-[2px_2px_0_var(--border)]"
+                      >
+                        <span className="mt-1 inline-block size-1.5 rounded-full bg-foreground" />
+                        <span className="flex-1 text-sm leading-snug">
+                          {line}
+                        </span>
+                      </li>
                     ))}
                   </ul>
                 )}
-              </motion.div>
+              </div>
             )}
           </AccordionContent>
         </AccordionItem>
