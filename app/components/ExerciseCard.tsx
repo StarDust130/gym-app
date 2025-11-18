@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 import {
@@ -24,6 +25,69 @@ export function ExerciseCard({
   onToggle,
   delay,
 }: ExerciseCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [tip, setTip] = useState<string | null>(null);
+  const [loadingTip, setLoadingTip] = useState(false);
+  const [tipError, setTipError] = useState<string | null>(null);
+
+  const storageKey = useMemo(
+    () => `exerciseTips:${exercise.name}`,
+    [exercise.name]
+  );
+
+  const loadTip = useCallback(async () => {
+    if (tip || loadingTip) return;
+
+    if (typeof window !== "undefined") {
+      const cached = window.localStorage.getItem(storageKey);
+      if (cached) {
+        setTip(cached);
+        setTipError(null);
+        return;
+      }
+    }
+
+    try {
+      setLoadingTip(true);
+      setTipError(null);
+      const res = await fetch(
+        `/api/exercise-tip?name=${encodeURIComponent(exercise.name)}`
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch tip");
+      }
+
+      const data = (await res.json()) as { ok: boolean; tip?: string };
+      if (!data.ok || !data.tip) {
+        throw new Error("Missing tip content");
+      }
+
+      setTip(data.tip);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(storageKey, data.tip);
+      }
+    } catch {
+      setTipError("Tip unavailable");
+    } finally {
+      setLoadingTip(false);
+    }
+  }, [exercise.name, loadingTip, storageKey, tip]);
+
+  useEffect(() => {
+    if (isOpen) {
+      void loadTip();
+    }
+  }, [isOpen, loadTip]);
+
+  const tipLines = useMemo(() => {
+    if (!tip) return [];
+    return tip
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }, [tip]);
+
   return (
     <motion.div
       layout
@@ -33,7 +97,11 @@ export function ExerciseCard({
       whileHover={{ scale: 1.01 }}
       className="rounded-3xl"
     >
-      <Accordion type="single" collapsible>
+      <Accordion
+        type="single"
+        collapsible
+        onValueChange={(value) => setIsOpen(value === exercise.id)}
+      >
         <AccordionItem
           value={exercise.id}
           className={`overflow-hidden rounded-3xl border-2 border-border bg-white shadow-[4px_4px_0_var(--border)] transition ${
@@ -64,7 +132,34 @@ export function ExerciseCard({
               <StatBlock label="Sets" value={exercise.sets} />
               <StatBlock label="Reps" value={exercise.reps} />
             </div>
-            
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-5 rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+                  Quick tips
+                </p>
+                {loadingTip && (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Loading quick tips...
+                  </p>
+                )}
+                {tipError && !loadingTip && (
+                  <p className="mt-2 text-sm font-medium text-destructive">
+                    {tipError}
+                  </p>
+                )}
+                {!loadingTip && !tipError && tipLines.length > 0 && (
+                  <ul className="mt-2 space-y-2 text-sm font-medium text-foreground">
+                    {tipLines.map((line, index) => (
+                      <li key={`${exercise.id}-tip-${index}`}>{line}</li>
+                    ))}
+                  </ul>
+                )}
+              </motion.div>
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

@@ -86,6 +86,8 @@ export function Dashboard({
   const [planUploadState, setPlanUploadState] = useState<PlanUploadState>(
     () => ({ ...defaultPlanUploadState })
   );
+  const [dayDrawerOpen, setDayDrawerOpen] = useState(false);
+  const [activeDay, setActiveDay] = useState<string | null>(null);
 
   useEffect(() => {
     setEditedName(name);
@@ -101,6 +103,22 @@ export function Dashboard({
       setEditedName(name);
     }
   }, [settingsOpen, name]);
+
+  const drawerFocus = activeDay
+    ? workoutPlan.schedule[activeDay] ?? "Rest Day"
+    : null;
+  const drawerExercises = drawerFocus
+    ? workoutPlan.workouts[drawerFocus] ?? []
+    : [];
+
+  const openDayDrawer = (day: string) => {
+    setActiveDay(day);
+    setDayDrawerOpen(true);
+  };
+
+  const closeDayDrawer = () => {
+    setDayDrawerOpen(false);
+  };
 
   const handleSaveName = () => {
     const trimmed = editedName.trim();
@@ -271,7 +289,16 @@ export function Dashboard({
                       <motion.div
                         key={day}
                         whileHover={{ y: -2 }}
-                        className={`flex items-center justify-between rounded-2xl border px-4 py-3 shadow-md ${
+                        onClick={() => openDayDrawer(day)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            openDayDrawer(day);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        className={`flex items-center justify-between rounded-2xl border px-4 py-3 shadow-md transition ${
                           isToday
                             ? "border-primary bg-linear-to-r from-primary/20 to-primary/10 shadow-primary/20 ring-2 ring-primary/30"
                             : "border-border bg-white"
@@ -449,6 +476,80 @@ export function Dashboard({
                   onClick={() => setSettingsOpen(false)}
                 >
                   Done
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {dayDrawerOpen && activeDay && (
+          <motion.div
+            key="week-drawer"
+            className="fixed inset-0 z-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeDayDrawer}
+            />
+            <motion.div
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              onDragEnd={(event, info) => {
+                if (info.offset.y > 120) {
+                  closeDayDrawer();
+                }
+              }}
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              className="absolute inset-x-0 bottom-0 max-h-[90vh] rounded-t-3xl border-2 border-border bg-white p-6 shadow-[0_25px_60px_rgba(0,0,0,0.25)]"
+            >
+              <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-muted" />
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                  Here’s your full plan for this day.
+                </p>
+                <h3 className="text-xl font-semibold text-foreground">
+                  {activeDay} – {drawerFocus}
+                </h3>
+              </div>
+              <div className="mt-5 max-h-[70vh] space-y-3 overflow-y-auto pr-1">
+                {drawerExercises.length === 0 ? (
+                  <div className="rounded-2xl border-2 border-dashed border-border bg-secondary/30 px-4 py-6 text-center text-sm font-semibold text-muted-foreground">
+                    Rest day energy. Light walks, deep breaths.
+                  </div>
+                ) : (
+                  drawerExercises.map((exercise) => (
+                    <div
+                      key={exercise.id}
+                      className="rounded-2xl border-2 border-border bg-white px-4 py-3 shadow-[3px_3px_0_var(--border)]"
+                    >
+                      <p className="text-sm font-semibold text-foreground">
+                        {exercise.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {exercise.sets} sets · {exercise.reps} reps
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="mt-4 flex justify-center">
+                <Button
+                  variant="ghost"
+                  onClick={closeDayDrawer}
+                  className="rounded-full border border-border px-6"
+                >
+                  Close
                 </Button>
               </div>
             </motion.div>
