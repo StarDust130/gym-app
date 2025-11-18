@@ -11,6 +11,7 @@ export default function HomePage() {
     completedExercises,
     toggleComplete,
     completeOnboarding,
+    updateUserSettings,
   } = useWorkoutStore();
 
   if (!userProfile || !workoutPlan) {
@@ -30,6 +31,7 @@ export default function HomePage() {
       workoutPlan={workoutPlan}
       completedExercises={completedExercises}
       toggleComplete={toggleComplete}
+      onUpdateSettings={updateUserSettings}
     />
   );
 }

@@ -71,10 +71,40 @@ export function useWorkoutStore() {
 
   const resetAll = () => setState({ ...initialState, lastResetDate: todayKey });
 
+  const updateUserSettings = (payload: {
+    name?: string;
+    plan?: WorkoutPlan;
+  }) => {
+    setState((prev) => {
+      if (!prev.userProfile && !prev.workoutPlan) {
+        return prev;
+      }
+
+      const nextProfile = payload.name
+        ? {
+            ...(prev.userProfile ?? {
+              joinDate: new Date().toISOString(),
+              name: payload.name,
+            }),
+            name: payload.name,
+          }
+        : prev.userProfile;
+
+      return {
+        ...prev,
+        userProfile: nextProfile,
+        workoutPlan: payload.plan ?? prev.workoutPlan,
+        completedExercises: payload.plan ? [] : prev.completedExercises,
+        lastResetDate: payload.plan ? todayKey : prev.lastResetDate,
+      };
+    });
+  };
+
   return {
     ...state,
     completeOnboarding,
     toggleComplete,
     resetAll,
+    updateUserSettings,
   };
 }
