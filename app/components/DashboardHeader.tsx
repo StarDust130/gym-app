@@ -57,11 +57,18 @@ export function DashboardHeader({
                 {name}
               </span>
               ,{" "}
-              <span className="text-base sm:text-lg">
-                {name.trim().toLowerCase() === "shreyesh"
-                  ? "you are gay 😏"
-                  : "Ready to crush it today?"}
-              </span>
+                <span className="text-base sm:text-lg">
+                {(() => {
+                  const lowered = name.trim().toLowerCase();
+                  if (
+                  lowered === "archiviste" ||  lowered === "shreyesh" ||
+                  lowered.includes("arc")
+                  ) {
+                  return "you are gaylord 😏";
+                  }
+                  return "Ready to crush it today?";
+                })()}
+                </span>
             </h2>
             <p className="text-xs text-muted-foreground/80 sm:text-sm">
               {todayLabel} ·{" "}
