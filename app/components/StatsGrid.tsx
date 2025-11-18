@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useMemo } from "react";
 
 interface StatsGridProps {
   focus: string;
@@ -11,7 +12,15 @@ interface StatsGridProps {
   todayExercisesTotal: number;
 }
 
+const emojis = ["🐥", "💪", "🔥", "⚡", "🎯", "🚀", "⭐", "🏋️", "🎉", "✨"];
+
 export function StatsGrid(props: StatsGridProps) {
+  const dailyEmoji = useMemo(() => {
+    const today = new Date().toDateString();
+    const seed = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return emojis[seed % emojis.length];
+  }, []);
+
   return (
     <motion.div
       layout
@@ -38,7 +47,7 @@ export function StatsGrid(props: StatsGridProps) {
               transition={{ type: "spring", stiffness: 280, damping: 20 }}
               className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-2.5 py-1.5 text-xs font-semibold text-foreground shadow-[3px_3px_0_rgba(0,0,0,0.15)]"
             >
-              <span className="text-lg leading-none">🐥</span>
+              <span className="text-lg leading-none">{dailyEmoji}</span>
               <span className="tracking-wide">
               {props.todayExercisesDone}
               <span className="mx-0.5 text-muted-foreground">/</span>
