@@ -516,7 +516,7 @@ export function Dashboard({
               <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-muted" />
               <div className="space-y-1">
                 <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                  Here’s your full plan for this day.
+                  Full plan for this day. 💪
                 </p>
                 <h3 className="text-xl font-semibold text-foreground">
                   {activeDay} – {drawerFocus}
