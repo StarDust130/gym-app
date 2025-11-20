@@ -54,8 +54,14 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "W1: Own body. W2+: Dumbbells.",
-        image: ["https://picsum.photos/800/600?random=2"],
-        video: [],
+        image: [
+          "https://www.inspireusafoundation.org/file/2023/07/bodyweight-forward-lunge.gif",
+          "https://c.tenor.com/wTulE6li6AEAAAAd/tenor.gif",
+        ],
+        video: [
+          "https://youtube.com/embed/BYe4uyGF-h4",
+          "https://youtube.com/embed/HIM0GrawvAU",
+        ],
       },
       {
         id: "lb-3",
@@ -63,8 +69,14 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 2.",
-        image: ["https://picsum.photos/800/600?random=3"],
-        video: [],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/LEG-EXTENSION.gif",
+        ],
+        video: [
+          "https://youtube.com/embed/EotSw18oR9w",
+          "https://youtube.com/embed/iQ92TuvBqRo",
+        ],
       },
       {
         id: "lb-4",
@@ -73,9 +85,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: "Start in Week 1.",
         image: [
-          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+          "https://liftmanual.com/wp-content/uploads/2023/04/bodyweight-standing-calf-raise.jpg",
+          "https://liftmanual.com/wp-content/uploads/2023/04/dumbbell-standing-calf-raise.jpg",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/wdOkFomQNp8"],
       },
       {
         id: "lb-5",
@@ -84,9 +97,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: "Start in Week 2.",
         image: [
-          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+          "https://burnfit.io/wp-content/uploads/2023/11/SEAT_CALF_RAISE.gif",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/S2yhz3klwdU"],
       },
       {
         id: "lb-6",
@@ -95,9 +108,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: null,
         image: [
-          "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&auto=format&fit=crop&q=60",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/08/Seated-Leg-Curl.gif",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/_lgE0gPvbik"],
       },
       {
         id: "lb-7",
@@ -106,7 +119,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "1",
         note: "Hold each stretch for 30s.",
         image: [
-          "https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=800&auto=format&fit=crop&q=60",
+          "https://liftmanual.com/wp-content/uploads/2023/04/standing-quadriceps-stretch.jpg",
+          "https://www.vissco.com/wp-content/uploads/animation/sub/supine-piriformis-stretch.gif",
         ],
         video: [],
       },
