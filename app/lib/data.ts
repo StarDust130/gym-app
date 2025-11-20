@@ -4,6 +4,8 @@ export type WorkoutExercise = {
   reps: string;
   sets: string;
   note: string | null;
+  image?: string[];
+  video?: string[];
 };
 
 export type WorkoutSchedule = {
@@ -35,6 +37,16 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Use own body weight for 1st week, then Dumbbells.",
+        image: [
+          "https://training.fit/wp-content/uploads/2020/03/kniebeugen-1024x573.png",
+          "https://www.wikihow.com/images/thumb/b/b1/Do-Free-Squats-Step-11-Version-2.jpg/aid3265293-v4-728px-Do-Free-Squats-Step-11-Version-2.jpg.webp",
+          "https://hips.hearstapps.com/hmg-prod/images/goblet-squat-1594986802.jpg?resize=980:*",
+          "https://training.fit/wp-content/uploads/2020/03/kniebeugen-kurzhanteln-1024x573.png",
+        ],
+        video: [
+          "https://www.youtube.com/embed/-5LhNSMBrEs",
+          "https://youtube.com/embed/lRYBbchqxtI",
+        ],
       },
       {
         id: "lb-2",
@@ -42,6 +54,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "W1: Own body. W2+: Dumbbells.",
+        image: ["https://picsum.photos/800/600?random=2"],
+        video: [],
       },
       {
         id: "lb-3",
@@ -49,6 +63,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 2.",
+        image: ["https://picsum.photos/800/600?random=3"],
+        video: [],
       },
       {
         id: "lb-4",
@@ -56,6 +72,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 1.",
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "lb-5",
@@ -63,6 +83,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 2.",
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "lb-6",
@@ -70,6 +94,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "lb-7",
@@ -77,6 +105,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "N/A",
         sets: "1",
         note: "Hold each stretch for 30s.",
+        image: [
+          "https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
     ],
     "Upper Body": [
@@ -86,6 +118,11 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 1.",
+        image: [
+          "https://images.unsplash.com/photo-1598971639058-9b19603f83b9?w=800&auto=format&fit=crop&q=60",
+          "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-2",
@@ -93,6 +130,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Use M/C in Week 2.",
+        image: [
+          "https://images.unsplash.com/photo-1598971639058-9b19603f83b9?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-3",
@@ -100,6 +141,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-4",
@@ -107,6 +152,11 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-5",
@@ -114,6 +164,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 1.",
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-6",
@@ -121,6 +175,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 2.",
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-7",
@@ -128,6 +186,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-8",
@@ -135,6 +197,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-9",
@@ -142,6 +208,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start Back extension after 15 days.",
+        image: [
+          "https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-10",
@@ -149,6 +219,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 1.",
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-11",
@@ -156,6 +230,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: "Start in Week 2.",
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-12",
@@ -163,6 +241,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-13",
@@ -170,6 +252,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ub-14",
@@ -177,6 +263,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "N/A",
         sets: "1",
         note: "Hold each stretch for 30s.",
+        image: [
+          "https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
     ],
     "Cardio & Abs": [
@@ -186,6 +276,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ca-2",
@@ -193,6 +287,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ca-3",
@@ -200,6 +298,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ca-4",
@@ -207,6 +309,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "20-15",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ca-5",
@@ -214,6 +320,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "30-60s",
         sets: "2-3",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
       {
         id: "ca-6",
@@ -221,6 +331,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "N/A",
         sets: "1",
         note: null,
+        image: [
+          "https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=800&auto=format&fit=crop&q=60",
+        ],
+        video: [],
       },
     ],
     "Rest Day": [],

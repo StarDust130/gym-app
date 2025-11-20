@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import {
   Accordion,
@@ -10,7 +10,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { WorkoutExercise } from "@/app/lib/data";
+import Image from "next/image";
+import { ytCommand } from "@/lib/utils";
 
 type ExerciseCardProps = {
   exercise: WorkoutExercise;
@@ -92,6 +95,41 @@ export function ExerciseCard({
   // Only show tips box if accordion is open and tips or error are present
   const shouldShowTips = isOpen && (tipLines.length > 0 || !!tipError);
 
+  const videoRefs = useRef<(HTMLIFrameElement | null)[]>([]);
+  const videoScrollRef = useRef<HTMLDivElement>(null);
+
+ const handleVideoScroll = () => {
+   if (!videoScrollRef.current) return;
+
+   const container = videoScrollRef.current;
+   const cards = [...container.children] as HTMLDivElement[];
+
+   let activeIndex = 0;
+   let minDiff = Infinity;
+
+   cards.forEach((card, idx) => {
+     const diff = Math.abs(
+       card.getBoundingClientRect().left -
+         container.getBoundingClientRect().left
+     );
+     if (diff < minDiff) {
+       minDiff = diff;
+       activeIndex = idx;
+     }
+   });
+
+   // Pause all videos
+   videoRefs.current.forEach((iframe) => {
+     if (iframe) ytCommand(iframe, "pause");
+   });
+
+   // Play the centered video
+   const activeIframe = videoRefs.current[activeIndex];
+   if (activeIframe) ytCommand(activeIframe, "play");
+ };
+
+
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -132,9 +170,99 @@ export function ExerciseCard({
           </AccordionTrigger>
 
           <AccordionContent className="border-t-2 border-dashed border-border/50 bg-muted/40 px-5 py-5">
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-2 gap-3 text-sm mb-6">
               <StatBlock label="Sets" value={exercise.sets.toString()} />
               <StatBlock label="Reps" value={exercise.reps.toString()} />
+            </div>
+
+            {/* Media Tabs */}
+            <div className="mb-6">
+              <Tabs defaultValue="images" className="w-full">
+                <TabsList className="w-full grid grid-cols-2 bg-white border-2 border-border p-1 h-auto rounded-xl shadow-[2px_2px_0_var(--border)]">
+                  <TabsTrigger
+                    value="images"
+                    className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
+                  >
+                    Images
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="videos"
+                    className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
+                  >
+                    Videos
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Images */}
+                <TabsContent
+                  value="images"
+                  className="mt-4 focus-visible:outline-none"
+                >
+                  {exercise.image && exercise.image.length > 0 ? (
+                    <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                      {exercise.image.map((img, idx) => (
+                        <div
+                          key={idx}
+                          className="snap-center shrink-0 w-56 sm:w-64 first:ml-2 last:mr-2"
+                        >
+                          <div className="relative h-56 w-full overflow-hidden rounded-xl border-2 border-border shadow-[3px_3px_0_var(--border)] bg-white">
+                            <Image
+                              src={img}
+                              alt={`${exercise.name} ${idx + 1}`}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                              width={100}
+                              height={100}
+
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
+                      <p className="text-sm font-medium text-muted-foreground">
+                        No images available.
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Videos */}
+                <TabsContent
+                  value="videos"
+                  className="mt-4 focus-visible:outline-none"
+                >
+                  {exercise.video && exercise.video.length > 0 ? (
+                    <div
+                      ref={videoScrollRef}
+                      onScroll={handleVideoScroll}
+                      className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
+                    >
+                      {exercise.video.map((vid, idx) => (
+                        <div
+                          key={idx}
+                          className="snap-center shrink-0 w-56 sm:w-64 first:ml-2 last:mr-2"
+                        >
+                          <iframe
+                            ref={(el) => (videoRefs.current[idx] = el)}
+                            src={`${vid}?mute=1&controls=1&enablejsapi=1`}
+                            className="w-full aspect-9/16 rounded-xl border-2 border-border shadow-[3px_3px_0_var(--border)] bg-black"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
+                      <p className="text-sm font-medium text-muted-foreground">
+                        No videos available.
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </div>
 
             {shouldShowTips && (
@@ -142,7 +270,7 @@ export function ExerciseCard({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35 }}
-                className="mt-5 rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]"
+                className="rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]"
               >
                 <div className="mb-2 flex items-center justify-between">
                   <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
