@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { WorkoutExercise } from "@/app/lib/data";
 import Image from "next/image";
 import { ytCommand } from "@/lib/utils";
+import { Lightbulb } from "lucide-react";
 
 type ExerciseCardProps = {
   exercise: WorkoutExercise;
@@ -175,8 +176,26 @@ export function ExerciseCard({
               <StatBlock label="Reps" value={exercise.reps.toString()} />
             </div>
 
+            {exercise.note && exercise.note.trim().length > 0 && (
+              <div className="mt-3 mb-3 flex items-start gap-2">
+                <div
+                  className="
+        flex h-5 w-5 items-center justify-center 
+        rounded-md border border-border bg-white 
+        shadow-[2px_2px_0_var(--border)]
+      "
+                >
+                  <Lightbulb className="h-3.5 w-3.5 text-primary" />
+                </div>
+
+                <p className="text-[12px] font-medium text-foreground leading-snug">
+                  {exercise.note}
+                </p>
+              </div>
+            )}
+
             {/* Media Tabs */}
-            <div className="mb-6">
+            <div className="mb-6 mt-2">
               <Tabs defaultValue="images" className="w-full">
                 <TabsList className="w-full grid grid-cols-2 bg-white border-2 border-border p-1 h-auto rounded-xl shadow-[2px_2px_0_var(--border)]">
                   <TabsTrigger
@@ -199,26 +218,48 @@ export function ExerciseCard({
                   className="mt-4 focus-visible:outline-none"
                 >
                   {exercise.image && exercise.image.length > 0 ? (
-                    <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-                      {exercise.image.map((img, idx) => (
+                    exercise.image.length === 1 ? (
+                      /* ONE IMAGE → FULL WIDTH CARD */
+                      <div className="w-full px-2">
                         <div
-                          key={idx}
-                          className="snap-center shrink-0 w-56 sm:w-64 first:ml-2 last:mr-2"
+                          className="relative w-full h-64 overflow-hidden rounded-xl 
+          border-2 border-border shadow-[3px_3px_0_var(--border)] bg-white"
                         >
-                          <div className="relative h-56 w-full overflow-hidden rounded-xl border-2 border-border shadow-[3px_3px_0_var(--border)] bg-white">
-                            <Image
-                              src={img}
-                              alt={`${exercise.name} ${idx + 1}`}
-                              className="h-full w-full object-cover"
-                              loading="lazy"
-                              width={100}
-                              height={100}
-
-                            />
-                          </div>
+                          <Image
+                            src={exercise.image[0]}
+                            alt={exercise.name}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                            width={500}
+                            height={500}
+                          />
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ) : (
+                      /* MULTIPLE IMAGES → HORIZONTAL CAROUSEL */
+                      <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+                        {exercise.image.map((img, idx) => (
+                          <div
+                            key={idx}
+                            className="snap-center shrink-0 w-56 sm:w-64 first:ml-2 last:mr-2"
+                          >
+                            <div
+                              className="relative h-56 w-full overflow-hidden rounded-xl 
+              border-2 border-border shadow-[3px_3px_0_var(--border)] bg-white"
+                            >
+                              <Image
+                                src={img}
+                                alt={`${exercise.name} ${idx + 1}`}
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                                width={300}
+                                height={300}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )
                   ) : (
                     <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
                       <p className="text-sm font-medium text-muted-foreground">
