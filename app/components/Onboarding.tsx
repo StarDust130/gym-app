@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, type ChangeEvent, KeyboardEvent } from "react";
+import { useState, KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, Loader2, UploadCloud } from "lucide-react";
 
 import { MOCK_WORKOUT_PLAN, type WorkoutPlan } from "@/app/lib/data";
 import { Button } from "@/components/ui/button";
@@ -16,70 +15,18 @@ type OnboardingProps = {
 export function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
-  const [fileName, setFileName] = useState(
-    "Upload an image of your workout plan"
-  );
-  const [isUploading, setIsUploading] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-
-  // ----------------------------- FILE HANDLER -----------------------------
-  const handleFileUpload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setFileName(file.name);
-    setIsUploading(true);
-    setIsComplete(false);
-
-    // ❌ Reject PDFs
-    if (file.type === "application/pdf") {
-      setIsUploading(false);
-      setFileName(
-        "❌ PDF not supported — take screenshot and upload the IMAGE"
-      );
-      return;
-    }
-
-    // Convert image to base64
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      try {
-        const base64 = reader.result as string;
-
-        const res = await fetch("/api/parse-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: base64 }),
-        });
-
-        const json = await res.json();
-
-        if (!json.ok) {
-          setIsUploading(false);
-          setFileName("❌ This doesn’t look like a workout plan");
-          return;
-        }
-
-        localStorage.setItem("workoutPlan", JSON.stringify(json.data));
-
-        setIsUploading(false);
-        setIsComplete(true);
-
-        onComplete({ name: name.trim(), plan: json.data });
-      } catch (err) {
-        setIsUploading(false);
-        setFileName("❌ Upload failed");
-      }
-    };
-
-    reader.readAsDataURL(file);
-  };
 
   // ENTER key on name input
   const handleEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && name.trim()) {
       setStep(2);
     }
+  };
+
+  // ⭐ FINISH WITH BEGINNER PLAN
+  const startBeginnerPlan = () => {
+    localStorage.setItem("workoutPlan", JSON.stringify(MOCK_WORKOUT_PLAN));
+    onComplete({ name: name.trim(), plan: MOCK_WORKOUT_PLAN });
   };
 
   return (
@@ -99,7 +46,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             Create your plan fast
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            Enter your name and upload your workout plan image.
+            Follow these quick steps to begin.
           </p>
         </motion.div>
 
@@ -161,49 +108,26 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                       Step 2 of 2
                     </p>
                     <h2 className="text-2xl font-semibold">
-                      Upload your workout image
+                      Start with Beginner Plan
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      PDFs not supported — take a screenshot & upload the photo.
+                      Skip uploads — begin directly with the predefined beginner schedule.
                     </p>
                   </div>
 
-                  <label className="flex cursor-pointer flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-border bg-secondary/40 px-4 py-10 text-center transition hover:-translate-y-0.5">
-                    {isUploading ? (
-                      <Loader2 className="size-10 animate-spin text-primary" />
-                    ) : isComplete ? (
-                      <CheckCircle2 className="size-10 text-primary" />
-                    ) : (
-                      <UploadCloud className="size-10 text-primary" />
-                    )}
-
-                    <span className="text-base font-semibold text-primary">
-                      {isUploading
-                        ? "Processing..."
-                        : isComplete
-                        ? "Plan uploaded"
-                        : "Drop or tap to upload"}
-                    </span>
-
-                    <span className="text-xs text-muted-foreground">
-                      {fileName}
-                    </span>
-
-                    <Input
-                      type="file"
-                      accept="image/*,application/pdf"
-                      className="sr-only"
-                      disabled={isUploading}
-                      onChange={handleFileUpload}
-                    />
-                  </label>
+                  {/* ⭐ Start with Beginner Plan button */}
+                  <Button
+                    className="w-full border-2 border-border bg-primary text-primary-foreground shadow-[4px_4px_0_var(--border)] hover:bg-primary/90"
+                    onClick={startBeginnerPlan}
+                  >
+                    Start Beginner Plan
+                  </Button>
 
                   <div className="flex gap-2 text-sm">
                     <Button
                       variant="ghost"
                       className="flex-1 border-2 border-border bg-white shadow-[4px_4px_0_var(--border)]"
                       onClick={() => setStep(1)}
-                      disabled={isUploading}
                     >
                       Back
                     </Button>
