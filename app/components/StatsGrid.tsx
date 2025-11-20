@@ -47,14 +47,13 @@ function useWindowSize() {
 }
 
 export function StatsGrid(props: StatsGridProps) {
-  // --- Timer State ---
-  const [timeLeft, setTimeLeft] = useState(WORKOUT_DURATION);
+  // --- TIMER STATE (NEW) ---
   const [isActive, setIsActive] = useState(false);
-  const [startTime, setStartTime] = useState<string | null>(null);
+  const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(WORKOUT_DURATION);
 
-  // NEW: Add state for End Time
+  // OLD UI STATES
   const [endTime, setEndTime] = useState<string | null>(null);
-
   const [completionDuration, setCompletionDuration] = useState<string | null>(
     null
   );
@@ -67,7 +66,7 @@ export function StatsGrid(props: StatsGridProps) {
     const today = new Date().toDateString();
     const seed = today
       .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
     return emojis[seed % emojis.length];
   }, []);
 
@@ -77,20 +76,44 @@ export function StatsGrid(props: StatsGridProps) {
     setMounted(true);
   }, []);
 
+  // --- LOAD TIMER FROM STORAGE IF APP WAS CLOSED ---
   useEffect(() => {
-    // If finished and timer is running, stop it and record duration
+    const savedStart = localStorage.getItem("timerStart");
+
+    if (savedStart) {
+      const ts = Number(savedStart);
+      setStartTimestamp(ts);
+      setIsActive(true);
+    }
+  }, []);
+
+  // --- REAL TIME TIMER LOOP ---
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isActive && startTimestamp) {
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTimestamp) / 1000);
+        const remaining = WORKOUT_DURATION - elapsed;
+        setTimeLeft(remaining);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isActive, startTimestamp]);
+
+  useEffect(() => {
     if (isFinished && isActive) {
       setIsActive(false);
 
-      // Calculate elapsed time
-      const timeSpent = WORKOUT_DURATION - timeLeft;
-      const m = Math.floor(timeSpent / 60);
-      const s = timeSpent % 60;
+      const now = Date.now();
+      const elapsed = Math.floor((now - (startTimestamp ?? now)) / 1000);
+
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
       const durationString = `${m} min ${s > 0 ? `${s}s` : ""}`;
 
       setCompletionDuration(durationString);
 
-      // NEW: Capture the End Time
       setEndTime(
         new Date().toLocaleTimeString("en-US", {
           hour: "numeric",
@@ -102,40 +125,30 @@ export function StatsGrid(props: StatsGridProps) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000);
     }
-  }, [isFinished, isActive, timeLeft]);
-
-  // --- Timer Interval Logic ---
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isActive) {
-      interval = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isActive]);
+  }, [isFinished, isActive, startTimestamp]);
 
   const toggleTimer = () => {
     if (isFinished) return;
 
-    if (!isActive && !startTime) {
-      setStartTime(
-        new Date().toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        })
-      );
+    if (!isActive) {
+      if (!startTimestamp) {
+        const now = Date.now();
+        localStorage.setItem("timerStart", now.toString());
+        setStartTimestamp(now);
+      }
     }
+
     setIsActive(!isActive);
   };
 
   const resetTimer = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsActive(false);
+    setStartTimestamp(null);
+    localStorage.removeItem("timerStart");
+
     setTimeLeft(WORKOUT_DURATION);
-    setStartTime(null);
-    setEndTime(null); // NEW: Reset End Time
+    setEndTime(null);
     setCompletionDuration(null);
     setShowConfetti(false);
   };
@@ -172,7 +185,7 @@ export function StatsGrid(props: StatsGridProps) {
       {mounted &&
         showConfetti &&
         createPortal(
-          <div className="fixed inset-0 z-9999 pointer-events-none">
+          <div className="fixed inset-0 z-[9999] pointer-events-none">
             <Confetti
               width={width}
               height={height}
@@ -201,9 +214,7 @@ export function StatsGrid(props: StatsGridProps) {
               }
         }
         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        className={`
-            neubrut-card relative overflow-hidden rounded-xl border bg-white shadow-lg ring-1 ring-black/5 backdrop-blur-sm
-        `}
+        className="neubrut-card relative overflow-hidden rounded-xl border bg-white shadow-lg ring-1 ring-black/5 backdrop-blur-sm"
       >
         <CardContent className="space-y-6 px-5 py-6 relative z-10">
           {/* --- TIMER SECTION --- */}
@@ -237,17 +248,19 @@ export function StatsGrid(props: StatsGridProps) {
               </motion.div>
 
               <AnimatePresence>
-                {!isFinished && timeLeft !== WORKOUT_DURATION && (
-                  <motion.button
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    onClick={resetTimer}
-                    className="absolute -right-12 p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                  >
-                    <RotateCcw className="w-5 h-5" />
-                  </motion.button>
-                )}
+                {!isFinished &&
+                  timeLeft !== WORKOUT_DURATION &&
+                  startTimestamp && (
+                    <motion.button
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      onClick={resetTimer}
+                      className="absolute -right-12 p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                    >
+                      <RotateCcw className="w-5 h-5" />
+                    </motion.button>
+                  )}
               </AnimatePresence>
             </div>
 
@@ -258,16 +271,22 @@ export function StatsGrid(props: StatsGridProps) {
                     key="finished"
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    // Changed layout to flex-col to stack the duration and the timestamps
                     className="flex flex-col items-center text-emerald-600"
                   >
                     <div className="flex items-center gap-1.5 text-xs font-bold">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       Completed in {completionDuration}
                     </div>
-                    {/* NEW: Display Start Time - End Time */}
+
                     <span className="text-[10px] font-medium opacity-80 mt-0.5">
-                      {startTime} - {endTime}
+                      {startTimestamp
+                        ? new Date(startTimestamp).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
+                        : null}{" "}
+                      - {endTime}
                     </span>
                   </motion.div>
                 ) : isActive ? (
@@ -285,8 +304,14 @@ export function StatsGrid(props: StatsGridProps) {
                     {isOvertime && <Zap className="w-3 h-3 fill-current" />}
                     {isOvertime
                       ? "Limit Exceeded!"
-                      : startTime
-                      ? `Started at ${startTime}`
+                      : startTimestamp
+                      ? `Started at ${new Date(
+                          startTimestamp
+                        ).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}`
                       : "Running..."}
                   </motion.div>
                 ) : (
@@ -297,7 +322,7 @@ export function StatsGrid(props: StatsGridProps) {
                     exit={{ opacity: 0, y: 5 }}
                     className="text-xs font-medium text-muted-foreground"
                   >
-                    {timeLeft === WORKOUT_DURATION ? "Tap to Start" : "Paused"}
+                    Tap to Start
                   </motion.p>
                 )}
               </AnimatePresence>
@@ -321,7 +346,11 @@ export function StatsGrid(props: StatsGridProps) {
                 key={`${props.todayExercisesDone}-${props.todayExercisesTotal}`}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 280, damping: 20 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 280,
+                  damping: 20,
+                }}
                 className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-2.5 py-1.5 text-xs font-semibold text-foreground shadow-[3px_3px_0_rgba(0,0,0,0.15)]"
               >
                 <span className="text-lg leading-none">{dailyEmoji}</span>
