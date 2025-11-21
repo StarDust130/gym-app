@@ -133,10 +133,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: "Start in Week 1.",
         image: [
-          "https://images.unsplash.com/photo-1598971639058-9b19603f83b9?w=800&auto=format&fit=crop&q=60",
-          "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&auto=format&fit=crop&q=60",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/bNmvKpJSWKM"],
       },
       {
         id: "ub-2",
@@ -145,9 +144,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: "Use M/C in Week 2.",
         image: [
-          "https://images.unsplash.com/photo-1598971639058-9b19603f83b9?w=800&auto=format&fit=crop&q=60",
+          "https://c.tenor.com/2NYcfHsikFcAAAAd/tenor.gif",
+          "https://i.pinimg.com/originals/a0/1e/6e/a01e6e9ac81f3e913ec42ec5802c13a3.gif",
         ],
-        video: [],
+        video: [
+          "https://youtube.com/embed/FTwvmczf7bE",
+          "https://youtube.com/embed/qD1WZ5pSuvk",
+        ],
       },
       {
         id: "ub-3",
@@ -156,9 +159,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: null,
         image: [
-          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+          "https://cdn.shopify.com/s/files/1/0547/0486/5477/files/dumbbell-shrug_480x480.gif?v=1701426774",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/rFsSeClGnNA"],
       },
       {
         id: "ub-4",
@@ -167,10 +170,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: null,
         image: [
-          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
-          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Press.gif",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/WbCEvFA0NJs"],
       },
       {
         id: "ub-5",
@@ -179,32 +181,33 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2-3",
         note: "Start in Week 1.",
         image: [
-          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/8fXfwG4ftaQ"],
       },
       {
         id: "ub-6",
-        name: "Incline M/C Press (optional)",
-        reps: "20-15",
-        sets: "2-3",
-        note: "Start in Week 2.",
-        image: [
-          "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60",
-        ],
-        video: [],
-      },
-      {
-        id: "ub-7",
         name: "Overhead press DB",
         reps: "20-15",
         sets: "2-3",
         note: null,
         image: [
-          "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
+          "https://fitnessprogramer.com/wp-content/uploads/2023/09/Standing-Dumbbell-Overhead-Press.gif",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/eNMl9UoO7YA"],
       },
+      {
+        id: "ub-7",
+        name: "Incline M/C Press (optional)",
+        reps: "20-15",
+        sets: "2-3",
+        note: "Start in Week 2.",
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Chest-Press-Machine.gif",
+        ],
+        video: ["https://youtube.com/embed/hkU6fSHcslw"],
+      },
+
       {
         id: "ub-8",
         name: "External rotation DB",
