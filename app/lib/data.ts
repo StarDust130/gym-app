@@ -254,7 +254,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         image: [
           "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&auto=format&fit=crop&q=60",
         ],
-        video: [],
+        video: ["https://youtube.com/embed/MKWBV29S6c0"],
       },
       {
         id: "ub-12",
