@@ -297,9 +297,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       {
         id: "ca-1",
         name: "Sit up (on floor)",
-        reps: "20-15",
-        sets: "2-3",
-        note: null,
+        reps: "10-12",
+        sets: "2",
+        note: "Curl up slowly; avoid pulling neck.",
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Sit-ups.gif",
         ],
@@ -307,32 +307,32 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       },
       {
         id: "ca-2",
-        name: "Side crunch",
-        reps: "20-15",
-        sets: "2-3",
-        note: null,
-        image: [
-          "https://homeworkouts.org/wp-content/uploads/anim-oblique-crunches.gif",
-        ],
-        video: ["https://youtube.com/embed/f06w3nrXeEQ"],
-      },
-      {
-        id: "ca-3",
         name: "Leg raise",
-        reps: "20-15",
-        sets: "2-3",
-        note: null,
+        reps: "8-12",
+        sets: "2",
+        note: "Keep lower back pressed to floor.",
         image: [
           "https://www.inspireusafoundation.org/file/2022/12/captains-chair-leg-raise.gif",
         ],
         video: ["https://youtube.com/embed/FijNSgahpz0"],
       },
       {
+        id: "ca-3",
+        name: "Side crunch",
+        reps: "10-12 each side",
+        sets: "2",
+        note: "Lift shoulder toward hip, not elbow toward knee.",
+        image: [
+          "https://homeworkouts.org/wp-content/uploads/anim-oblique-crunches.gif",
+        ],
+        video: ["https://youtube.com/embed/f06w3nrXeEQ"],
+      },
+      {
         id: "ca-4",
         name: "Russian twists (legs on floor) / Side bend DB",
-        reps: "20-15",
-        sets: "2-3",
-        note: null,
+        reps: "12-16 total",
+        sets: "2",
+        note: "Keep spine neutral; twist from core.",
         image: [
           "https://www.kettlebellkings.com/cdn/shop/articles/russian-twist_cf5b5524-a334-4364-9cb9-54b5a04962d9.gif?v=1739267488&width=1000",
           "https://fitnessprogramer.com/wp-content/uploads/2021/05/Dumbbell-Side-Bend.gif",
@@ -345,24 +345,25 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       {
         id: "ca-5",
         name: "Plank",
-        reps: "30-60s",
-        sets: "2-3",
-        note: null,
+        reps: "20–40s",
+        sets: "2",
+        note: "Keep body straight; don’t drop hips.",
         image: ["https://www.inspireusafoundation.org/file/2022/01/plank.gif"],
         video: ["https://youtube.com/embed/xe2MXatLTUw"],
       },
       {
         id: "ca-6",
         name: "Stretching",
-        reps: "N/A",
+        reps: "30–40s",
         sets: "1",
-        note: null,
+        note: "Light cooldown to relax abs & lower back.",
         image: [
           "https://media.tenor.com/YcE7CHM_HCsAAAAm/bubu-exercise-bubu-stretching.webp",
         ],
         video: [],
       },
     ],
+
     "Rest Day": [],
   },
 };
