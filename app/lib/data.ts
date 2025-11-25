@@ -565,6 +565,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "1",
         note: "Light cooldown to relax abs & lower back.",
         image: [
+          "https://vibes2.funnyjunk.com/gifs/Exercise+routine_61d32c_7179399.gif",
           "https://media.tenor.com/YcE7CHM_HCsAAAAm/bubu-exercise-bubu-stretching.webp",
         ],
         video: [],
