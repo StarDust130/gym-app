@@ -11,6 +11,7 @@ import { WorkoutList } from "@/app/components/WorkoutList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 interface DashboardProps {
   name: string;
@@ -433,40 +434,14 @@ export function Dashboard({
                   )}
                 </div>
 
-                <div className="space-y-4 rounded-3xl border border-dashed border-border bg-secondary/10 p-4 shadow-[4px_4px_0_var(--border)] sm:p-6">
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">
-                      Upload a new workout schedule
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      We parse it instantly and refresh today&apos;s focus.
-                    </p>
-                  </div>
-                  <label className="flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border bg-white px-4 py-8 text-center transition hover:-translate-y-0.5">
-                    {planUploadState.status === "uploading" ? (
-                      <Loader2 className="size-9 animate-spin text-primary" />
-                    ) : planUploadState.status === "success" ? (
-                      <CheckCircle2 className="size-9 text-primary" />
-                    ) : planUploadState.status === "error" ? (
-                      <X className="size-9 text-destructive" />
-                    ) : (
-                      <UploadCloud className="size-9 text-primary" />
-                    )}
-                    <span className="text-base font-semibold text-foreground">
-                      {planUploadState.title}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {planUploadState.helper}
-                    </span>
-                    <Input
-                      type="file"
-                      accept="image/*,application/pdf"
-                      className="sr-only"
-                      disabled={planUploadState.status === "uploading"}
-                      onChange={handlePlanUpload}
-                    />
-                  </label>
-                </div>
+                <Image
+                  // src="https://pa1.aminoapps.com/5715/52f102e550dbcbdba83dbb8ba571082e3629ae89_hq.gif"
+                  src="https://gifsec.com/wp-content/uploads/2022/10/anime-dance-gif-1.gif"
+                  alt="Anime girl dancing energetically"
+                  width={500}
+                  height={300}
+                  className="rounded-2xl border border-border/70 shadow-[4px_4px_0_var(--border)]"
+                />
               </div>
 
               <div className="mt-6 flex items-center justify-end">
