@@ -6,6 +6,8 @@ export type WorkoutExercise = {
   note: string | null;
   image?: string[];
   video?: string[];
+  impact?: string[];
+  impactImage?: string;
 };
 
 export type WorkoutSchedule = {
@@ -47,6 +49,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://www.youtube.com/embed/-5LhNSMBrEs",
           "https://youtube.com/embed/lRYBbchqxtI",
         ],
+        impact:
+          "Targets quadriceps, glutes, hamstrings, and core for lower body strength and stability.",
+        impactImage:
+          "https://www.inspireusafoundation.org/file/2021/06/bodyweight-squat.gif",
       },
       {
         id: "lb-2",
@@ -62,6 +68,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://youtube.com/embed/38xlLGfguz4",
           "https://youtube.com/embed/HIM0GrawvAU",
         ],
+        impact:
+          "Targets quadriceps, glutes, hamstrings, and improves balance and stability.",
+        impactImage:
+          "https://www.inspireusafoundation.org/file/2023/07/bodyweight-forward-lunge.gif",
       },
       {
         id: "lb-3",
@@ -77,6 +87,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://youtube.com/embed/pCLf-OeSMtQ",
           "https://youtube.com/embed/iQ92TuvBqRo",
         ],
+        impact:
+          "Targets quadriceps, hamstrings, and glutes with controlled machine movement.",
+        impactImage:
+          "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif",
       },
       {
         id: "lb-4",
@@ -136,6 +150,10 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif",
         ],
         video: ["https://youtube.com/embed/bNmvKpJSWKM"],
+        impact:
+          "Targets latissimus dorsi, biceps, and rear shoulders for back development and posture improvement.",
+        impactImage:
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif",
       },
       {
         id: "ub-2",
@@ -304,6 +322,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Sit-ups.gif",
         ],
         video: ["https://youtube.com/embed/qXpYgvQ6_m4"],
+        impact: [
+          "Works front abs",
+          "Helps build core strength",
+          "You feel the burn in upper abs",
+        ],
+        impactImage:
+          "https://lifefitindia.com/wp-content/uploads/2025/07/decline-sit-up-muscle-worked.webp",
       },
 
       {
@@ -316,6 +341,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://www.inspireusafoundation.org/file/2022/12/captains-chair-leg-raise.gif",
         ],
         video: ["https://youtube.com/embed/FijNSgahpz0"],
+        impact: [
+          "Targets lower abs",
+          "Helps build core control",
+          "You feel it below the belly button",
+        ],
+        impactImage:
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lying-Leg-Raise.gif",
       },
 
       {
@@ -328,6 +360,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://homeworkouts.org/wp-content/uploads/anim-oblique-crunches.gif",
         ],
         video: ["https://youtube.com/embed/f06w3nrXeEQ"],
+        impact: [
+          "Works side abs (obliques)",
+          "Helps shape waist",
+          "You feel it on left or right side",
+        ],
+        impactImage:
+          "https://cdn.shopify.com/s/files/1/1497/9682/files/2_e375444e-a875-4ce6-bef3-2a582d884bce.jpg?v=1653323820",
       },
 
       {
@@ -344,6 +383,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://youtube.com/embed/iFQV6q4xRXM",
           "https://youtube.com/embed/44DazvtgpGE",
         ],
+        impact: [
+          "Works side abs",
+          "Improves twist strength",
+          "You feel tightness in your core",
+        ],
+        impactImage:
+          "https://www.kettlebellkings.com/cdn/shop/articles/russian-twist_cf5b5524-a334-4364-9cb9-54b5a04962d9.gif?v=1739267488&width=1000",
       },
 
       {
@@ -354,6 +400,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         note: "Keep body straight; don’t drop hips.",
         image: ["https://www.inspireusafoundation.org/file/2022/01/plank.gif"],
         video: ["https://youtube.com/embed/xe2MXatLTUw"],
+        impact: [
+          "Works whole core",
+          "Helps improve stability",
+          "You feel tightness in stomach & back",
+        ],
+        impactImage:
+          "https://im.indiatimes.in/content/2017/Jun/muscles_hillwritingandediting_com_1497717343_725x725.jpg?w=725&h=483&cc=1&webp=1&q=75",
       },
 
       {
@@ -368,7 +421,6 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         video: [],
       },
 
-      // ⭐ NEW: Cardio finisher added at end
       {
         id: "ca-7",
         name: "Light Cardio (Cycling / Treadmill)",
@@ -380,6 +432,11 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "https://ugokawaii.com/wp-content/uploads/2024/01/bicycle.gif",
         ],
         video: [""],
+        impact: [
+          "Boosts heart health",
+          "Burns extra calories",
+          "You feel light sweat, steady breathing",
+        ],
       },
     ],
 

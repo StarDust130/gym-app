@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { WorkoutExercise } from "@/app/lib/data";
 import Image from "next/image";
 import { ytCommand } from "@/lib/utils";
-import { Lightbulb } from "lucide-react";
+import { Check, Lightbulb } from "lucide-react";
 
 type ExerciseCardProps = {
   exercise: WorkoutExercise;
@@ -99,37 +99,35 @@ export function ExerciseCard({
   const videoRefs = useRef<(HTMLIFrameElement | null)[]>([]);
   const videoScrollRef = useRef<HTMLDivElement>(null);
 
- const handleVideoScroll = () => {
-   if (!videoScrollRef.current) return;
+  const handleVideoScroll = () => {
+    if (!videoScrollRef.current) return;
 
-   const container = videoScrollRef.current;
-   const cards = [...container.children] as HTMLDivElement[];
+    const container = videoScrollRef.current;
+    const cards = [...container.children] as HTMLDivElement[];
 
-   let activeIndex = 0;
-   let minDiff = Infinity;
+    let activeIndex = 0;
+    let minDiff = Infinity;
 
-   cards.forEach((card, idx) => {
-     const diff = Math.abs(
-       card.getBoundingClientRect().left -
-         container.getBoundingClientRect().left
-     );
-     if (diff < minDiff) {
-       minDiff = diff;
-       activeIndex = idx;
-     }
-   });
+    cards.forEach((card, idx) => {
+      const diff = Math.abs(
+        card.getBoundingClientRect().left -
+          container.getBoundingClientRect().left
+      );
+      if (diff < minDiff) {
+        minDiff = diff;
+        activeIndex = idx;
+      }
+    });
 
-   // Pause all videos
-   videoRefs.current.forEach((iframe) => {
-     if (iframe) ytCommand(iframe, "pause");
-   });
+    // Pause all videos
+    videoRefs.current.forEach((iframe) => {
+      if (iframe) ytCommand(iframe, "pause");
+    });
 
-   // Play the centered video
-   const activeIframe = videoRefs.current[activeIndex];
-   if (activeIframe) ytCommand(activeIframe, "play");
- };
-
-
+    // Play the centered video
+    const activeIframe = videoRefs.current[activeIndex];
+    if (activeIframe) ytCommand(activeIframe, "play");
+  };
 
   return (
     <motion.div
@@ -197,7 +195,7 @@ export function ExerciseCard({
             {/* Media Tabs */}
             <div className="mb-6 mt-2">
               <Tabs defaultValue="images" className="w-full">
-                <TabsList className="w-full grid grid-cols-2 bg-white border-2 border-border p-1 h-auto rounded-xl shadow-[2px_2px_0_var(--border)]">
+                <TabsList className="w-full grid grid-cols-3 bg-white border-2 border-border p-1 h-auto rounded-xl shadow-[2px_2px_0_var(--border)]">
                   <TabsTrigger
                     value="images"
                     className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
@@ -209,6 +207,12 @@ export function ExerciseCard({
                     className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
                   >
                     Videos
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="impact"
+                    className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
+                  >
+                    Impact
                   </TabsTrigger>
                 </TabsList>
 
@@ -319,6 +323,79 @@ export function ExerciseCard({
                     <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
                       <p className="text-sm font-medium text-muted-foreground">
                         No videos available.
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Impact */}
+                <TabsContent
+                  value="impact"
+                  className="mt-4 focus-visible:outline-none"
+                >
+                  {exercise.impact && exercise.impact.length > 0 ? (
+                    <div className="space-y-4">
+                      {/* Bullet impact list */}
+                      <div
+                        className="
+        rounded-xl border-2 border-border bg-white 
+        shadow-[3px_3px_0_var(--border)] px-4 py-3
+        space-y-2
+      "
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          Impact
+                        </p>
+
+                        <ul className="space-y-2">
+                          {exercise.impact.map((point: string, i: number) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <div
+                                className="
+                  h-4 w-4 flex items-center justify-center 
+                  rounded-sm border border-border bg-secondary/40
+                  shadow-[1px_1px_0_var(--border)]
+                  shrink-0
+                "
+                              >
+                                <Check className="h-3 w-3 text-primary" />
+                              </div>
+
+                              <p className="text-[13px] leading-snug text-foreground">
+                                {point}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Impact image */}
+                      {exercise.impactImage && (
+                        <div className="px-1">
+                          <div
+                            className="
+              relative w-full h-64 
+              overflow-hidden rounded-xl 
+              border-2 border-border bg-white
+              shadow-[3px_3px_0_var(--border)]
+            "
+                          >
+                            <Image
+                              src={exercise.impactImage}
+                              alt={`${exercise.name} impact`}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                              width={600}
+                              height={600}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
+                      <p className="text-sm font-medium text-muted-foreground">
+                        No impact information available.
                       </p>
                     </div>
                   )}
