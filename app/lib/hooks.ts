@@ -2,29 +2,55 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { MOCK_WORKOUT_PLAN, type WorkoutPlan } from "@/app/lib/data";
+import {
+  MOCK_WORKOUT_PLAN,
+  WORKOUT_PLAN_VERSION,
+  type WorkoutPlan,
+} from "@/app/lib/data";
 
 const STORE_KEY = "gym-app-store";
-const DEFAULT_PLAN_SERIALIZED = JSON.stringify(MOCK_WORKOUT_PLAN);
-const DEFAULT_PLAN_FINGERPRINT = hashString(DEFAULT_PLAN_SERIALIZED);
+const DEFAULT_EXERCISE_IDS = new Set(
+  Object.values(MOCK_WORKOUT_PLAN.workouts).flatMap((list) =>
+    list.map((exercise) => exercise.id)
+  )
+);
+const DEFAULT_PLAN_MATCH_THRESHOLD = Math.max(
+  5,
+  Math.floor(DEFAULT_EXERCISE_IDS.size * 0.5)
+);
 
 type UserProfile = {
   name: string;
   joinDate: string;
 };
 
+type PlanSource = "default" | "custom";
+
 type WorkoutStoreState = {
   userProfile: UserProfile | null;
   workoutPlan: WorkoutPlan | null;
-  workoutPlanFingerprint: string | null;
+  planSource: PlanSource | null;
+  planVersion: string | null;
   completedExercises: string[];
   lastResetDate: string | null;
+};
+
+type PersistedWorkoutStoreState = {
+  userProfile: UserProfile | null;
+  workoutPlan: WorkoutPlan | null;
+  planSource: PlanSource | null;
+  planVersion: string | null;
+  completedExercises: string[];
+  lastResetDate: string | null;
+  // legacy field from previous versions
+  workoutPlanFingerprint?: string | null;
 };
 
 const initialState: WorkoutStoreState = {
   userProfile: null,
   workoutPlan: null,
-  workoutPlanFingerprint: null,
+  planSource: null,
+  planVersion: null,
   completedExercises: [],
   lastResetDate: null,
 };
@@ -38,27 +64,8 @@ export function useWorkoutStore() {
     const data = window.localStorage.getItem(STORE_KEY);
     if (!data) return { ...initialState, lastResetDate: todayKey };
     try {
-      const parsed = JSON.parse(data) as WorkoutStoreState;
-
-      const storedFingerprint = parsed.workoutPlanFingerprint ?? null;
-      const planWasDefault = parsed.workoutPlan
-        ? storedFingerprint
-          ? true
-          : parsed.workoutPlan.planName === MOCK_WORKOUT_PLAN.planName
-        : false;
-
-      if (planWasDefault && parsed.workoutPlan) {
-        const fingerprintChanged =
-          storedFingerprint !== DEFAULT_PLAN_FINGERPRINT;
-        parsed.workoutPlan = MOCK_WORKOUT_PLAN;
-        parsed.workoutPlanFingerprint = DEFAULT_PLAN_FINGERPRINT;
-        if (fingerprintChanged) {
-          parsed.completedExercises = [];
-        }
-      }
-
-      if (parsed.lastResetDate === todayKey) return parsed;
-      return { ...parsed, completedExercises: [], lastResetDate: todayKey };
+      const parsed = JSON.parse(data) as PersistedWorkoutStoreState;
+      return migratePersistedState(parsed, todayKey);
     } catch (error) {
       console.error("Failed to parse workout store", error);
       return { ...initialState, lastResetDate: todayKey };
@@ -67,15 +74,24 @@ export function useWorkoutStore() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    window.localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    const persistable: PersistedWorkoutStoreState = {
+      userProfile: state.userProfile,
+      workoutPlan: state.planSource === "custom" ? state.workoutPlan : null,
+      planSource: state.planSource,
+      planVersion: state.planVersion,
+      completedExercises: state.completedExercises,
+      lastResetDate: state.lastResetDate,
+    };
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(persistable));
   }, [state]);
 
   const completeOnboarding = (name: string, plan: WorkoutPlan) => {
-    const planFingerprint = computePlanFingerprint(plan);
+    const resolvedPlan = resolvePlanSelection(plan);
     setState({
       userProfile: { name, joinDate: new Date().toISOString() },
-      workoutPlan: plan,
-      workoutPlanFingerprint: planFingerprint,
+      workoutPlan: resolvedPlan.plan,
+      planSource: resolvedPlan.planSource,
+      planVersion: resolvedPlan.planVersion,
       completedExercises: [],
       lastResetDate: todayKey,
     });
@@ -114,18 +130,30 @@ export function useWorkoutStore() {
           }
         : prev.userProfile;
 
-      const nextPlan = payload.plan ?? prev.workoutPlan;
-      const planFingerprint = payload.plan
-        ? computePlanFingerprint(payload.plan)
-        : prev.workoutPlanFingerprint;
+      let nextPlan =
+        prev.planSource === "default" ? MOCK_WORKOUT_PLAN : prev.workoutPlan;
+      let nextPlanSource = prev.planSource;
+      let nextPlanVersion = prev.planVersion;
+      let nextCompleted = prev.completedExercises;
+      let nextResetDate = prev.lastResetDate;
+
+      if (payload.plan) {
+        const resolvedPlan = resolvePlanSelection(payload.plan);
+        nextPlan = resolvedPlan.plan;
+        nextPlanSource = resolvedPlan.planSource;
+        nextPlanVersion = resolvedPlan.planVersion;
+        nextCompleted = [];
+        nextResetDate = todayKey;
+      }
 
       return {
         ...prev,
         userProfile: nextProfile,
         workoutPlan: nextPlan,
-        workoutPlanFingerprint: planFingerprint,
-        completedExercises: payload.plan ? [] : prev.completedExercises,
-        lastResetDate: payload.plan ? todayKey : prev.lastResetDate,
+        planSource: nextPlanSource,
+        planVersion: nextPlanVersion,
+        completedExercises: nextCompleted,
+        lastResetDate: nextResetDate,
       };
     });
   };
@@ -139,18 +167,104 @@ export function useWorkoutStore() {
   };
 }
 
-function computePlanFingerprint(plan: WorkoutPlan | null): string | null {
-  if (!plan) return null;
-  const serialized = JSON.stringify(plan);
-  if (serialized !== DEFAULT_PLAN_SERIALIZED) return null;
-  return DEFAULT_PLAN_FINGERPRINT;
+function migratePersistedState(
+  raw: PersistedWorkoutStoreState,
+  todayKey: string
+): WorkoutStoreState {
+  const safeCompleted = Array.isArray(raw.completedExercises)
+    ? raw.completedExercises
+    : [];
+
+  const base: WorkoutStoreState = {
+    userProfile: raw.userProfile ?? null,
+    workoutPlan: raw.workoutPlan ?? null,
+    planSource: raw.planSource ?? null,
+    planVersion: raw.planVersion ?? raw.workoutPlanFingerprint ?? null,
+    completedExercises: safeCompleted,
+    lastResetDate: raw.lastResetDate ?? todayKey,
+  };
+
+  if (!base.userProfile) {
+    base.workoutPlan = null;
+    base.planSource = null;
+    base.planVersion = null;
+  } else if (shouldAttachDefaultPlan(base)) {
+    const versionChanged = base.planVersion !== WORKOUT_PLAN_VERSION;
+    base.workoutPlan = MOCK_WORKOUT_PLAN;
+    base.planSource = "default";
+    base.planVersion = WORKOUT_PLAN_VERSION;
+    if (versionChanged) {
+      base.completedExercises = [];
+    }
+  } else if (!base.workoutPlan) {
+    base.workoutPlan = MOCK_WORKOUT_PLAN;
+    base.planSource = "default";
+    base.planVersion = WORKOUT_PLAN_VERSION;
+  }
+
+  if (base.userProfile && !base.planSource && base.workoutPlan) {
+    if (looksLikeDefaultPlan(base.workoutPlan)) {
+      base.workoutPlan = MOCK_WORKOUT_PLAN;
+      base.planSource = "default";
+      base.planVersion = WORKOUT_PLAN_VERSION;
+    } else {
+      base.planSource = "custom";
+      base.planVersion = null;
+    }
+  }
+
+  if (base.lastResetDate !== todayKey) {
+    base.completedExercises = [];
+    base.lastResetDate = todayKey;
+  }
+
+  return base;
 }
 
-function hashString(input: string): string {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
+function shouldAttachDefaultPlan(state: WorkoutStoreState): boolean {
+  if (!state.userProfile) return false;
+  if (state.planSource === "custom") return false;
+  if (!state.workoutPlan) return true;
+  if (state.planSource === "default") return true;
+  if (state.planVersion) return true;
+  return looksLikeDefaultPlan(state.workoutPlan);
+}
+
+function looksLikeDefaultPlan(plan: WorkoutPlan | null): boolean {
+  if (!plan) return false;
+  if (plan === MOCK_WORKOUT_PLAN) return true;
+  if (plan.planName === MOCK_WORKOUT_PLAN.planName) return true;
+
+  const exercises = Object.values(plan.workouts ?? {}).flatMap((list) =>
+    list.map((exercise) => exercise.id)
+  );
+  if (!exercises.length) return false;
+
+  let overlap = 0;
+  exercises.forEach((id) => {
+    if (DEFAULT_EXERCISE_IDS.has(id)) {
+      overlap += 1;
+    }
+  });
+  return overlap >= DEFAULT_PLAN_MATCH_THRESHOLD;
+}
+
+function resolvePlanSelection(plan: WorkoutPlan): {
+  plan: WorkoutPlan;
+  planSource: PlanSource;
+  planVersion: string | null;
+} {
+  if (looksLikeDefaultPlan(plan)) {
+    return {
+      plan: MOCK_WORKOUT_PLAN,
+      planSource: "default",
+      planVersion: WORKOUT_PLAN_VERSION,
+    };
   }
-  return hash.toString(16);
+
+  return {
+    plan,
+    planSource: "custom",
+    planVersion: null,
+  };
 }
