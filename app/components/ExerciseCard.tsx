@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { Check, Lightbulb } from "lucide-react";
 
 import {
   Accordion,
@@ -10,9 +12,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { WorkoutExercise } from "@/app/lib/data";
-import Image from "next/image";
 import { ytCommand } from "@/lib/utils";
-import { Check, Lightbulb } from "lucide-react";
 
 type ExerciseCardProps = {
   exercise: WorkoutExercise;
@@ -27,428 +27,158 @@ export function ExerciseCard({
   onToggle,
   delay,
 }: ExerciseCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [tip, setTip] = useState<string | null>(null);
-  const [loadingTip, setLoadingTip] = useState(false);
-  const [tipError, setTipError] = useState<string | null>(null);
-
-  const storageKey = useMemo(
-    () => `exerciseTips:${exercise.name}`,
-    [exercise.name]
-  );
-
-  const loadTip = useCallback(async () => {
-    if (tip || loadingTip) return;
-
-    if (typeof window !== "undefined") {
-      const cached = window.localStorage.getItem(storageKey);
-      if (cached) {
-        setTip(cached);
-        setTipError(null);
-        return;
-      }
-    }
-
-    try {
-      setLoadingTip(true);
-      setTipError(null);
-      const res = await fetch(
-        `/api/exercise-tip?name=${encodeURIComponent(exercise.name)}`
-      );
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch tip");
-      }
-
-      const data = (await res.json()) as { ok: boolean; tip?: string };
-      if (!data.ok || !data.tip) {
-        setTip(""); // Empty string indicates "fetched but empty"
-        return;
-      }
-
-      setTip(data.tip);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(storageKey, data.tip);
-      }
-    } catch {
-      setTipError("Tip unavailable");
-    } finally {
-      setLoadingTip(false);
-    }
-  }, [exercise.name, loadingTip, storageKey, tip]);
-
-  useEffect(() => {
-    if (isOpen) {
-      void loadTip();
-    }
-  }, [isOpen, loadTip]);
-
-  const tipLines = useMemo(() => {
-    if (!tip) return [];
-    return tip
-      .split("\n")
-      .map((line) => line.trim().replace(/^[-•]\s*/, ""))
-      .filter(Boolean);
-  }, [tip]);
-
-  // Only show tips box if accordion is open and tips or error are present
-  const shouldShowTips = isOpen && (tipLines.length > 0 || !!tipError);
-
   const videoRefs = useRef<(HTMLIFrameElement | null)[]>([]);
   const videoScrollRef = useRef<HTMLDivElement>(null);
 
   const handleVideoScroll = () => {
     if (!videoScrollRef.current) return;
+    const cards = [...videoScrollRef.current.children] as HTMLDivElement[];
 
-    const container = videoScrollRef.current;
-    const cards = [...container.children] as HTMLDivElement[];
+    let active = 0;
+    let min = Infinity;
 
-    let activeIndex = 0;
-    let minDiff = Infinity;
-
-    cards.forEach((card, idx) => {
-      const diff = Math.abs(
-        card.getBoundingClientRect().left -
-          container.getBoundingClientRect().left
+    cards.forEach((c, i) => {
+      const d = Math.abs(
+        c.getBoundingClientRect().left -
+          videoScrollRef.current!.getBoundingClientRect().left
       );
-      if (diff < minDiff) {
-        minDiff = diff;
-        activeIndex = idx;
+      if (d < min) {
+        min = d;
+        active = i;
       }
     });
 
-    // Pause all videos
-    videoRefs.current.forEach((iframe) => {
-      if (iframe) ytCommand(iframe, "pause");
-    });
-
-    // Play the centered video
-    const activeIframe = videoRefs.current[activeIndex];
-    if (activeIframe) ytCommand(activeIframe, "play");
+    videoRefs.current.forEach((v) => v && ytCommand(v, "pause"));
+    videoRefs.current[active] && ytCommand(videoRefs.current[active]!, "play");
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: delay * 0.03 }}
-      whileHover={{ scale: 1.005 }}
-      className="rounded-3xl"
+      transition={{ delay: delay * 0.03 }}
     >
-      <Accordion
-        type="single"
-        collapsible
-        onValueChange={(value) => setIsOpen(value === exercise.id)}
-      >
+      <Accordion type="single" collapsible>
         <AccordionItem
           value={exercise.id}
-          className={`overflow-hidden rounded-3xl border-2 border-border bg-white shadow-[4px_4px_0_var(--border)] transition-opacity duration-300 ${
-            completed ? "opacity-60" : "opacity-100"
+          className={`rounded-3xl border-2 bg-white shadow-[4px_4px_0_var(--border)] ${
+            completed ? "opacity-60" : ""
           }`}
         >
-          <AccordionTrigger className="flex flex-col gap-3 px-5 py-4 text-left sm:flex-row sm:items-center hover:no-underline">
-            <div className="flex w-full items-start gap-3">
+          {/* ================= HEADER ================= */}
+          <AccordionTrigger className="px-5 py-4 text-left hover:no-underline">
+            <div className="flex w-full gap-3">
               <div onClick={(e) => e.stopPropagation()}>
                 <Checkbox
                   checked={completed}
                   onCheckedChange={onToggle}
-                  className="mt-1 size-6 rounded-full border-[3px] border-border bg-white data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                  className="mt-1 size-6 rounded-full border-[3px]"
                 />
               </div>
-              <div className="flex-1 text-left">
+
+              {/* NAME + PILL (LOCKED STRUCTURE) */}
+              <div className="flex-1">
                 <p className="text-base font-semibold leading-tight">
                   {exercise.name}
                 </p>
+
+                {/* ✅ YELLOW PILL — EXACT OLD POSITION */}
+                <div className="mt-2 inline-block rounded-full border-2 border-border bg-secondary px-4 py-1 text-xs font-semibold uppercase tracking-wide">
+                  {exercise.sets} sets · {exercise.reps} reps
+                </div>
               </div>
             </div>
-            <span className="shrink-0 rounded-full border-2 border-border bg-secondary px-4 py-1 text-xs font-semibold uppercase tracking-wide text-border">
-              {exercise.sets} sets · {exercise.reps} reps
-            </span>
           </AccordionTrigger>
 
-          <AccordionContent className="border-t-2 border-dashed border-border/50 bg-muted/40 px-5 py-5">
-            <div className="grid grid-cols-2 gap-3 text-sm mb-6">
-              <StatBlock label="Sets" value={exercise.sets.toString()} />
-              <StatBlock label="Reps" value={exercise.reps.toString()} />
-            </div>
-
-            {exercise.note && exercise.note.trim().length > 0 && (
-              <div className="mt-3 mb-3 flex items-start gap-2">
-                <div
-                  className="
-        flex h-5 w-5 items-center justify-center 
-        rounded-md border border-border bg-white 
-        shadow-[2px_2px_0_var(--border)]
-      "
-                >
-                  <Lightbulb className="h-3.5 w-3.5 text-primary" />
-                </div>
-
-                <p className="text-[12px] font-medium text-foreground leading-snug">
-                  {exercise.note}
-                </p>
+          {/* ================= CONTENT ================= */}
+          <AccordionContent className="px-5 pt-4 pb-6 space-y-5">
+            {/* NOTE */}
+            {exercise.note && (
+              <div className="flex items-start gap-2 text-sm">
+                <Lightbulb className="mt-0.5 h-4 w-4 text-primary" />
+                <p>{exercise.note}</p>
               </div>
             )}
 
-            {/* Media Tabs */}
-            <div className="mb-6 mt-2">
-              <Tabs defaultValue="images" className="w-full">
-                <TabsList className="w-full grid grid-cols-3 bg-white border-2 border-border p-1 h-auto rounded-xl shadow-[2px_2px_0_var(--border)]">
-                  <TabsTrigger
-                    value="images"
-                    className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
-                  >
-                    Images
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="videos"
-                    className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
-                  >
-                    Videos
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="impact"
-                    className="rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-foreground py-2 font-bold uppercase tracking-wider text-xs"
-                  >
-                    Impact
-                  </TabsTrigger>
-                </TabsList>
+            {/* TABS */}
+            <Tabs defaultValue="images">
+              <TabsList className="grid grid-cols-3 rounded-xl border p-1">
+                <TabsTrigger value="images">Images</TabsTrigger>
+                <TabsTrigger value="videos">Videos</TabsTrigger>
+                <TabsTrigger value="impact">Impact</TabsTrigger>
+              </TabsList>
 
-                {/* Images */}
-                <TabsContent
-                  value="images"
-                  className="mt-4 focus-visible:outline-none"
-                >
-                  {exercise.image && exercise.image.length > 0 ? (
-                    exercise.image.length === 1 ? (
-                      /* ONE IMAGE → FULL WIDTH CARD */
-                      <div className="w-full px-2">
-                        <div
-                          className="relative w-full h-64 overflow-hidden rounded-xl 
-          border-2 border-border shadow-[3px_3px_0_var(--border)] bg-white"
-                        >
+              {/* IMAGES */}
+              <TabsContent value="images">
+                <div className="rounded-xl border bg-white p-4">
+                  {exercise.image?.length ? (
+                    <div className="flex gap-4 overflow-x-auto">
+                      {exercise.image.map((img, i) => (
+                        <div key={i} className="shrink-0">
                           <Image
-                            src={exercise.image[0]}
+                            src={img}
                             alt={exercise.name}
-                            className="h-full w-full object-cover"
-                            loading="lazy"
-                            width={500}
-                            height={500}
+                            width={260}
+                            height={260}
+                            className="rounded-xl object-contain"
                           />
                         </div>
-                      </div>
-                    ) : (
-                      /* MULTIPLE IMAGES → HORIZONTAL CAROUSEL */
-                      <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-                        {exercise.image.map((img, idx) => (
-                          <div
-                            key={idx}
-                            className="snap-center shrink-0 w-56 sm:w-64 first:ml-2 last:mr-2"
-                          >
-                            <div
-                              className="relative h-56 w-full overflow-hidden rounded-xl 
-              border-2 border-border shadow-[3px_3px_0_var(--border)] bg-white"
-                            >
-                              <Image
-                                src={img}
-                                alt={`${exercise.name} ${idx + 1}`}
-                                className="h-full w-full object-cover"
-                                loading="lazy"
-                                width={300}
-                                height={300}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )
-                  ) : (
-                    <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        No images available.
-                      </p>
-                    </div>
-                  )}
-                </TabsContent>
-
-                {/* Videos */}
-                <TabsContent
-                  value="videos"
-                  className="mt-4 focus-visible:outline-none"
-                >
-                  {exercise.video &&
-                  exercise.video.filter((v) => v && v.trim().length > 0)
-                    .length > 0 ? (
-                    <div
-                      ref={videoScrollRef}
-                      onScroll={handleVideoScroll}
-                      className={`
-        pb-4 scrollbar-hide
-        ${
-          exercise.video.filter((v) => v && v.trim().length > 0).length === 1
-            ? "w-full"
-            : "flex gap-4 overflow-x-auto snap-x snap-mandatory"
-        }
-      `}
-                    >
-                      {exercise.video
-                        .filter((v) => v && v.trim().length > 0)
-                        .map((vid, idx) => (
-                          <div
-                            key={idx}
-                            className={`
-              ${
-                exercise.video.filter((v) => v && v.trim().length > 0)
-                  .length === 1
-                  ? "w-full"
-                  : "snap-center shrink-0 w-56 sm:w-64 first:ml-2 last:mr-2"
-              }
-            `}
-                          >
-                            <iframe
-                              ref={(el) => (videoRefs.current[idx] = el)}
-                              src={`${vid}?mute=1&controls=1&enablejsapi=1`}
-                              className="
-                w-full aspect-9/16
-                rounded-xl border-2 border-border 
-                shadow-[3px_3px_0_var(--border)] bg-black
-              "
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            />
-                          </div>
-                        ))}
+                      ))}
                     </div>
                   ) : (
-                    <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        No videos available.
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      No images available
+                    </p>
                   )}
-                </TabsContent>
-
-                {/* Impact */}
-                <TabsContent
-                  value="impact"
-                  className="mt-4 focus-visible:outline-none"
-                >
-                  {exercise.impact && exercise.impact.length > 0 ? (
-                    <div className="space-y-4">
-                      {/* Bullet impact list */}
-                      <div
-                        className="
-        rounded-xl border-2 border-border bg-white 
-        shadow-[3px_3px_0_var(--border)] px-4 py-3
-        space-y-2
-      "
-                      >
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          Impact
-                        </p>
-
-                        <ul className="space-y-2">
-                          {exercise.impact.map((point: string, i: number) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <div
-                                className="
-                  h-4 w-4 flex items-center justify-center 
-                  rounded-sm border border-border bg-secondary/40
-                  shadow-[1px_1px_0_var(--border)]
-                  shrink-0
-                "
-                              >
-                                <Check className="h-3 w-3 text-primary" />
-                              </div>
-
-                              <p className="text-[13px] leading-snug text-foreground">
-                                {point}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Impact image */}
-                      {exercise.impactImage && (
-                        <div className="px-1">
-                          <div
-                            className="
-              relative w-full h-64 
-              overflow-hidden rounded-xl 
-              border-2 border-border bg-white
-              shadow-[3px_3px_0_var(--border)]
-            "
-                          >
-                            <Image
-                              src={exercise.impactImage}
-                              alt={`${exercise.name} impact`}
-                              className="h-full w-full object-cover"
-                              loading="lazy"
-                              width={600}
-                              height={600}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-white/50">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        No impact information available.
-                      </p>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
-            </div>
-
-            {shouldShowTips && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
-                className="rounded-2xl border-2 border-border/70 bg-white/80 p-4 shadow-[3px_3px_0_var(--border)]"
-              >
-                <div className="mb-2 flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
-                    Quick tips
-                  </p>
                 </div>
+              </TabsContent>
 
-                {tipError ? (
-                  <p className="text-sm font-medium text-destructive">
-                    {tipError}
-                  </p>
-                ) : (
-                  <ul className="space-y-2 text-sm font-semibold text-foreground">
-                    {tipLines.map((line, index) => (
-                      <li
-                        key={`${exercise.id}-tip-${index}`}
-                        className="flex items-start gap-2 rounded-2xl border border-border/60 bg-secondary/30 px-3 py-2"
-                      >
-                        <span className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-foreground" />
-                        <span className="leading-snug">{line}</span>
+              {/* VIDEOS */}
+              <TabsContent value="videos">
+                <div
+                  ref={videoScrollRef}
+                  onScroll={handleVideoScroll}
+                  className="flex gap-4 overflow-x-auto rounded-xl border bg-white p-4"
+                >
+                  {exercise.video?.filter(Boolean).map((v, i) => (
+                    <iframe
+                      key={i}
+                      ref={(el) => (videoRefs.current[i] = el)}
+                      src={`${v}?enablejsapi=1&mute=1`}
+                      className="aspect-[9/16] w-56 rounded-xl border"
+                      allowFullScreen
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+
+              {/* IMPACT */}
+              <TabsContent value="impact">
+                <div className="rounded-xl border bg-white p-4 space-y-4">
+                  <ul className="space-y-2 rounded-lg bg-muted/40 p-3">
+                    {exercise.impact?.map((p, i) => (
+                      <li key={i} className="flex gap-2 text-sm">
+                        <Check className="mt-0.5 h-4 w-4 text-primary" />
+                        {p}
                       </li>
                     ))}
                   </ul>
-                )}
-              </motion.div>
-            )}
+
+                  {exercise.impactImage && (
+                    <Image
+                      src={exercise.impactImage}
+                      alt="impact"
+                      width={320}
+                      height={320}
+                      className="mx-auto rounded-xl object-contain"
+                    />
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
     </motion.div>
-  );
-}
-
-function StatBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border-2 border-border bg-white px-4 py-3 text-center">
-      <p className="text-2xl font-bold text-primary">{value}</p>
-      <p className="text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground">
-        {label}
-      </p>
-    </div>
   );
 }
