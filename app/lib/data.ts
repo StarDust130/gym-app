@@ -436,7 +436,7 @@ schedule: {
     sets: "3",
     note: "Stretch at bottom",
     image: [
-      "https://fitnessprogramer.com/wp-content/uploads/2021/02/Overhead-Dumbbell-Triceps-Extension.gif",
+      "https://c.tenor.com/V3J-mg9gH0kAAAAC/tenor.gif",
       "https://fitnessprogramer.com/wp-content/uploads/2021/02/Skullcrusher.gif"
     ],
     video: [
