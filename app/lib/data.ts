@@ -478,7 +478,7 @@ schedule: {
     sets: "3",
     note: "Slow and controlled",
     image: [
-      "https://fitnessprogramer.com/wp-content/uploads/2021/02/Triceps-Press-Machine.gif"
+      "https://www.inspireusafoundation.org/file/2022/09/machine-tricep-extension.gif"
     ],
     video: ["https://www.youtube.com/embed/hkU6fSHcslw"],
     impact: [
