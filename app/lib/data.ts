@@ -478,7 +478,7 @@ schedule: {
     sets: "3",
     note: "Slow and controlled",
     image: [
-      "https://www.dmoose.com/blogs/triceps/machine-tricep-extension?srsltid=AfmBOoqRr97BWOIsTmH-_co4RoKqmGblvK1VW_g_ci3RUwd0Pk4S3JPq"
+      "https://cdn.jefit.com/assets/img/exercises/gifs/220.gif"
     ],
     video: ["https://www.youtube.com/embed/hkU6fSHcslw"],
     impact: [
