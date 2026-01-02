@@ -49,12 +49,59 @@ function useWindowSize() {
 
 export function StatsGrid(props: StatsGridProps) {
   // --- TIMER STATE ---
-  const [isActive, setIsActive] = useState(false);
-  const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
-  const [timeLeft, setTimeLeft] = useState(WORKOUT_DURATION);
-  const [remainingAtLastStart, setRemainingAtLastStart] = useState(
-    WORKOUT_DURATION
-  );
+  const [timerState, setTimerState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(TIMER_STORAGE_KEY);
+      if (!saved) {
+        return {
+          isActive: false,
+          startTimestamp: null,
+          timeLeft: WORKOUT_DURATION,
+          remainingAtLastStart: WORKOUT_DURATION,
+        };
+      }
+
+      const parsed = JSON.parse(saved) as {
+        isActive: boolean;
+        startTimestamp: number | null;
+        remainingAtLastStart: number;
+      };
+
+      const savedRemaining =
+        typeof parsed.remainingAtLastStart === "number"
+          ? parsed.remainingAtLastStart
+          : WORKOUT_DURATION;
+
+      if (parsed.isActive && parsed.startTimestamp) {
+        const now = Date.now();
+        const elapsed = Math.floor((now - parsed.startTimestamp) / 1000);
+        const remaining = savedRemaining - elapsed;
+        return {
+          isActive: true,
+          startTimestamp: parsed.startTimestamp,
+          timeLeft: remaining,
+          remainingAtLastStart: savedRemaining,
+        };
+      } else {
+        return {
+          isActive: false,
+          startTimestamp: null,
+          timeLeft: savedRemaining,
+          remainingAtLastStart: savedRemaining,
+        };
+      }
+    } catch {
+      // if something is wrong, fall back to defaults
+      return {
+        isActive: false,
+        startTimestamp: null,
+        timeLeft: WORKOUT_DURATION,
+        remainingAtLastStart: WORKOUT_DURATION,
+      };
+    }
+  });
+
+  const { isActive, startTimestamp, timeLeft, remainingAtLastStart } = timerState;
 
   // OLD UI STATES
   const [endTime, setEndTime] = useState<string | null>(null);
@@ -80,46 +127,6 @@ export function StatsGrid(props: StatsGridProps) {
     setMounted(true);
   }, []);
 
-  // --- LOAD TIMER FROM STORAGE ---
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(TIMER_STORAGE_KEY);
-      if (!saved) return;
-
-      const parsed = JSON.parse(saved) as {
-        isActive: boolean;
-        startTimestamp: number | null;
-        remainingAtLastStart: number;
-      };
-
-      const savedRemaining =
-        typeof parsed.remainingAtLastStart === "number"
-          ? parsed.remainingAtLastStart
-          : WORKOUT_DURATION;
-
-      setRemainingAtLastStart(savedRemaining);
-
-      if (parsed.isActive && parsed.startTimestamp) {
-        const now = Date.now();
-        const elapsed = Math.floor((now - parsed.startTimestamp) / 1000);
-        const remaining = savedRemaining - elapsed;
-        setTimeLeft(remaining);
-        setIsActive(true);
-        setStartTimestamp(parsed.startTimestamp);
-      } else {
-        setTimeLeft(savedRemaining);
-        setIsActive(false);
-        setStartTimestamp(null);
-      }
-    } catch {
-      // if something is wrong, fall back to defaults
-      setIsActive(false);
-      setStartTimestamp(null);
-      setTimeLeft(WORKOUT_DURATION);
-      setRemainingAtLastStart(WORKOUT_DURATION);
-    }
-  }, []);
-
   // --- REAL TIME TIMER LOOP ---
   useEffect(() => {
     if (!isActive || !startTimestamp) return;
@@ -128,7 +135,7 @@ export function StatsGrid(props: StatsGridProps) {
       const now = Date.now();
       const elapsed = Math.floor((now - startTimestamp) / 1000);
       const remaining = remainingAtLastStart - elapsed;
-      setTimeLeft(remaining);
+      setTimerState((prev) => ({ ...prev, timeLeft: remaining }));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -137,7 +144,12 @@ export function StatsGrid(props: StatsGridProps) {
   // --- HANDLE FINISH (BASED ON PROGRESS) ---
   useEffect(() => {
     if (isFinished && isActive) {
-      setIsActive(false);
+      setTimerState((prev) => ({
+        ...prev,
+        isActive: false,
+        startTimestamp: null,
+        remainingAtLastStart: timeLeft,
+      }));
 
       // total elapsed based on countdown
       const totalElapsed = WORKOUT_DURATION - timeLeft;
@@ -194,9 +206,12 @@ export function StatsGrid(props: StatsGridProps) {
       // snapshot current remaining as baseline for this run
       const baselineRemaining = timeLeft;
 
-      setStartTimestamp(now);
-      setIsActive(true);
-      setRemainingAtLastStart(baselineRemaining);
+      setTimerState((prev) => ({
+        ...prev,
+        isActive: true,
+        startTimestamp: now,
+        remainingAtLastStart: baselineRemaining,
+      }));
 
       persistTimerState(true, now, baselineRemaining);
       return;
@@ -212,10 +227,13 @@ export function StatsGrid(props: StatsGridProps) {
         remainingNow = remainingAtLastStart - elapsed;
       }
 
-      setTimeLeft(remainingNow);
-      setRemainingAtLastStart(remainingNow);
-      setIsActive(false);
-      setStartTimestamp(null);
+      setTimerState((prev) => ({
+        ...prev,
+        isActive: false,
+        startTimestamp: null,
+        timeLeft: remainingNow,
+        remainingAtLastStart: remainingNow,
+      }));
 
       persistTimerState(false, null, remainingNow);
     }
@@ -223,11 +241,12 @@ export function StatsGrid(props: StatsGridProps) {
 
   const resetTimer = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsActive(false);
-    setStartTimestamp(null);
-
-    setTimeLeft(WORKOUT_DURATION);
-    setRemainingAtLastStart(WORKOUT_DURATION);
+    setTimerState({
+      isActive: false,
+      startTimestamp: null,
+      timeLeft: WORKOUT_DURATION,
+      remainingAtLastStart: WORKOUT_DURATION,
+    });
     setEndTime(null);
     setCompletionDuration(null);
     setShowConfetti(false);

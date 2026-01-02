@@ -1,91 +1,229 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo } from "react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
-import type { WorkoutExercise } from "@/app/lib/data";
-import { Card, CardContent } from "@/components/ui/card";
-import { ExerciseCard } from "@/app/components/ExerciseCard";
+import { ExerciseCard } from "./ExerciseCard";
+import { Check, Trophy } from "lucide-react";
+import { cn } from "@/lib/utils"; // Adjust path
+import { WorkoutExercise } from "../lib/data";
 
+// --- Types ---
 type WorkoutListProps = {
   exercises: WorkoutExercise[];
   completedIds: string[];
   dayLabel: string;
+  isLoading?: boolean;
   onToggle: (exerciseId: string) => void;
 };
 
+// --- Helper: Cool Shimmer Skeleton Loader ---
+const LoadingSkeleton = () => (
+  <div className="space-y-6 w-full max-w-3xl mx-auto px-2 mt-8">
+    {[1, 2, 3].map((i) => (
+      <div
+        key={i}
+        className="relative h-28 w-full bg-white border-[3px] border-black/5 rounded-[30px] overflow-hidden shadow-sm"
+      >
+        <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-black/5 to-transparent" />
+      </div>
+    ))}
+  </div>
+);
+
+// --- Helper: Rest Day Card ---
+const RestDayCard = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="w-full max-w-xl mx-auto mt-12 px-4"
+  >
+    <div className="relative border-[3px] border-black bg-[#FFFDF7] rounded-[40px] p-10 text-center shadow-[8px_8px_0px_0px_#000]">
+      <div className="w-20 h-20 bg-[#FFD27D] border-[3px] border-black rounded-full flex items-center justify-center mx-auto mb-6 shadow-[4px_4px_0px_0px_#000]">
+        <span className="text-4xl">💤</span>
+      </div>
+      <h3 className="text-3xl font-black uppercase tracking-tighter text-black mb-2">
+        Rest Day
+      </h3>
+      <p className="font-bold text-neutral-500 max-w-xs mx-auto">
+        Time to recover. See you tomorrow!
+      </p>
+    </div>
+  </motion.div>
+);
+
+// --- Main Component ---
 export function WorkoutList({
   exercises,
   completedIds,
-  dayLabel,
+  isLoading = false,
   onToggle,
 }: WorkoutListProps) {
-  const completedSet = new Set(completedIds);
+  // 1. Group & Sort Logic
+  const groupedData = useMemo(() => {
+    if (!exercises.length) return null;
 
-  // Sort: Unfinished first, then finished
-  const sortedExercises = [...exercises].sort((a, b) => {
-    const aDone = completedSet.has(a.id);
-    const bDone = completedSet.has(b.id);
-    return Number(aDone) - Number(bDone);
-  });
+    const groups: Record<string, WorkoutExercise[]> = {};
+    exercises.forEach((ex) => {
+      const cat = ex.category || "General";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(ex);
+    });
 
-  if (exercises.length === 0) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full px-3 sm:px-6"
-      >
-        <Card className="border-none bg-linear-to-br from-primary/15 via-background to-background shadow-lg rounded-2xl sm:rounded-3xl overflow-hidden">
-          <CardContent className="text-center px-4 py-8 sm:px-6 sm:py-12 space-y-2 sm:space-y-3">
-            <p className="text-xl sm:text-2xl font-semibold text-foreground leading-tight">
-              {dayLabel} reset mode
-            </p>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
-              Light walks, big exhales, solid fuel. Still training.
-            </p>
-          </CardContent>
-        </Card>
-      </motion.div>
+    const CATEGORY_ORDER = [
+      "Legs",
+      "Shoulder",
+      "Chest",
+      "Triceps",
+      "Back",
+      "Biceps",
+      "Abs",
+      "Cardio",
+    ];
+
+    const sortedCategories = Object.keys(groups).sort(
+      (a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)
     );
+
+    return sortedCategories.map((cat) => {
+      const sortedExercises = groups[cat].sort((a, b) => {
+        const aDone = completedIds.includes(a.id);
+        const bDone = completedIds.includes(b.id);
+        return Number(aDone) - Number(bDone);
+      });
+      return { category: cat, items: sortedExercises };
+    });
+  }, [exercises, completedIds]);
+
+  // 2. Loading State
+  if (isLoading) return <LoadingSkeleton />;
+
+  // 3. Empty State
+  if (!groupedData || groupedData.length === 0) {
+    return <RestDayCard />;
   }
 
+  // 4. Render
   return (
-    <motion.div
-      // Layout prop here handles the list reordering animation
-      layout
-      className="space-y-2.5 sm:space-y-3 md:space-y-4 w-full max-w-3xl mx-auto px-2 sm:px-4 md:px-6 pb-6 sm:pb-8"
-    >
-      <AnimatePresence mode="popLayout" initial={false}>
-        {sortedExercises.map((exercise, index) => {
-          const completed = completedSet.has(exercise.id);
+    <LayoutGroup>
+      <motion.div
+        className="w-full max-w-3xl mx-auto pb-32 space-y-12 relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        {groupedData.map((group) => {
+          const completedCount = group.items.filter((i) =>
+            completedIds.includes(i.id)
+          ).length;
+          const totalCount = group.items.length;
+          const isCategoryDone =
+            completedCount === totalCount && totalCount > 0;
+
           return (
-            <motion.div
-              key={exercise.id}
-              layout="position"
-              // Using layoutId creates a smooth transition when items swap places
-              layoutId={exercise.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{
-                layout: {
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                },
-                opacity: { duration: 0.2 },
-              }}
-            >
-              <ExerciseCard
-                exercise={exercise}
-                completed={completed}
-                onToggle={() => onToggle(exercise.id)}
-                delay={index}
-              />
-            </motion.div>
+            <div key={group.category} className="relative">
+              {/* STICKY HEADER - Fixed position and z-index */}
+              <div className="  mb-6 px-2 pointer-events-none">
+                <motion.div
+                  layout
+                  className={cn(
+                    "inline-flex items-center gap-3 px-5 py-2 rounded-full border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-colors duration-300 pointer-events-auto",
+                    isCategoryDone ? "bg-[#B8FF9F]" : "bg-black"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "text-xs font-black uppercase tracking-widest",
+                      isCategoryDone ? "text-black" : "text-white"
+                    )}
+                  >
+                    {group.category}
+                  </span>
+
+                  <span
+                    className={cn(
+                      "text-[10px] font-bold px-2 py-0.5 rounded-full",
+                      isCategoryDone
+                        ? "bg-black text-[#B8FF9F]"
+                        : "bg-white text-black"
+                    )}
+                  >
+                    {completedCount}/{totalCount}
+                  </span>
+
+                  <AnimatePresence>
+                    {isCategoryDone && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                      >
+                        <Check className="w-4 h-4 text-black stroke-[4]" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </div>
+
+              {/* CARD LIST */}
+              <motion.div layout className="space-y-5 px-1 relative z-20">
+                <AnimatePresence>
+                  {group.items.map((exercise) => (
+                    <ExerciseCard
+                      key={exercise.id}
+                      exercise={exercise}
+                      isCompleted={completedIds.includes(exercise.id)}
+                      onToggle={() => onToggle(exercise.id)}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            </div>
           );
         })}
-      </AnimatePresence>
-    </motion.div>
+
+        {/* FINAL CELEBRATION CARD */}
+        <AnimatePresence>
+          {exercises.every((e) => completedIds.includes(e.id)) &&
+            exercises.length > 0 && (
+              <motion.div
+                initial={{ y: 50, opacity: 0, scale: 0.9 }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  scale: 1,
+                  transition: { type: "spring", bounce: 0.5 },
+                }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="mx-4"
+              >
+                <div className="bg-[#FFD27D] border-[3px] border-black rounded-[40px] p-10 shadow-[8px_8px_0px_0px_#000] flex flex-col items-center justify-center text-center relative overflow-hidden">
+                  {/* Decorative background elements */}
+                  <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+                  <motion.div
+                    animate={{
+                      rotate: [0, -10, 10, -10, 0],
+                      scale: [1, 1.1, 1.1, 1],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "easeInOut",
+                    }}
+                    className="mb-6 relative z-10"
+                  >
+                    <Trophy className="w-20 h-20 text-black stroke-[1.5] fill-white" />
+                  </motion.div>
+                  <h2 className="text-4xl font-black uppercase italic tracking-tighter text-black relative z-10">
+                    Workout Crushed!
+                  </h2>
+                  <p className="font-bold text-lg text-black/80 mt-2 relative z-10">
+                    You're an animal. See you tomorrow.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+        </AnimatePresence>
+      </motion.div>
+    </LayoutGroup>
   );
 }
