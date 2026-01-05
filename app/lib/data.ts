@@ -404,9 +404,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         sets: "2 sets",
         category: "Abs",
         note: "Dynamic core movement",
-        tips: ["Keep legs straight", "Move smoothly"],
+        tips: ["aka:- Inchworm", "Keep legs straight", "Move smoothly"],
         image: [
-          "https://www.verywellfit.com/thmb/MlB-R4ujZ7evEwNLhdB4QxTzYAc=/750x0/filters:gifv(webm)/73--InchwormGIF-9a268be275804d59b0c34b9d357d6015.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2022/01/Inchworm.gif",
         ],
         video: ["https://youtube.com/embed/nSujRtyKaEM?si=L0FpRqZL_F2UipWp"],
         impact: ["Full core", "Mobility"],
@@ -427,8 +427,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         ],
         image: [
           "https://media.tenor.com/eXlIRe28PVgAAAAm/bubu-dudu-bubu.webp",
-          "https://media.tenor.com/lEy7Yw63vQUAAAAM/beast-mode-cardio.gif",
           "https://media.tenor.com/HXbs_-Rwqj4AAAAm/train-trainer.webp",
+          "https://media.tenor.com/lEy7Yw63vQUAAAAM/beast-mode-cardio.gif",
         ],
 
         impact: ["Fat burning", "Active recovery", "Improves blood flow"],
