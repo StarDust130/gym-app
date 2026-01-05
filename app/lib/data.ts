@@ -379,10 +379,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         category: "Abs",
         note: "Hold till failure",
         tips: ["Straight line from head to heel", "Squeeze glutes"],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Plank.gif",
-        ],
-        video: ["https://www.youtube.com/embed/pSHjTRCQxIw"],
+        image: ["https://www.inspireusafoundation.org/file/2022/01/plank.gif"],
+        video: ["https://youtube.com/embed/ftSgOmyQyEg?si=u6PPn6keN49-9mV8"],
         impact: ["Core stability", "Isometric strength"],
       },
       {
@@ -394,9 +392,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         note: "One side at a time",
         tips: ["Stretch fully", "Slow controlled bend"],
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Cable-Side-Bend.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2022/05/Side-bend.gif",
         ],
-        video: ["https://www.youtube.com/embed/0oZK4eX4wJY"],
+        video: ["https://youtube.com/embed/_5rpm-8ux0A?si=s_lcFg4RMCqC5Xrk"],
         impact: ["Obliques", "Core balance"],
       },
       {
@@ -408,9 +406,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         note: "Dynamic core movement",
         tips: ["Keep legs straight", "Move smoothly"],
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Inchworm.gif",
+          "https://www.verywellfit.com/thmb/MlB-R4ujZ7evEwNLhdB4QxTzYAc=/750x0/filters:gifv(webm)/73--InchwormGIF-9a268be275804d59b0c34b9d357d6015.gif",
         ],
-        video: ["https://www.youtube.com/embed/1J8mP6pGJwA"],
+        video: ["https://youtube.com/embed/nSujRtyKaEM?si=L0FpRqZL_F2UipWp"],
         impact: ["Full core", "Mobility"],
       },
 
@@ -428,9 +426,11 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
           "No sprinting",
         ],
         image: [
-          "https://media.tenor.com/D_8hL4i_6k8AAAAM/treadmill-running.gif",
+          "https://media.tenor.com/eXlIRe28PVgAAAAm/bubu-dudu-bubu.webp",
+          "https://media.tenor.com/lEy7Yw63vQUAAAAM/beast-mode-cardio.gif",
+          "https://media.tenor.com/HXbs_-Rwqj4AAAAm/train-trainer.webp",
         ],
-        video: ["https://www.youtube.com/embed/6GgQ7u1d1iQ"],
+
         impact: ["Fat burning", "Active recovery", "Improves blood flow"],
       },
     ],
