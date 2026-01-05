@@ -7,6 +7,7 @@ export type WorkoutExercise = {
   sets: string;
   category: string;
   note: string | null;
+  tips?: string[];
   image?: string[];
   video?: string[];
   impact?: string[];
@@ -24,7 +25,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
 
   // ✅ CORRECTED SCHEDULE: Monday is Back & Biceps
   schedule: {
-    Monday: "Back & Biceps",
+    Monday: "Back , Biceps & Forearms",
     Tuesday: "Cardio & Crunches",
     Wednesday: "Chest & Triceps",
     Thursday: "Cardio & Full Body Stretching",
@@ -37,179 +38,262 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     // ===========================================
     // MONDAY: BACK & BICEPS
     // ===========================================
-    "Back & Biceps": [
-      // BACK
+    "Back , Biceps & Forearms": [
+      /* ================= BACK ================= */
       {
         id: "bk-1",
-        name: "Bent over row 1st W / Bench supported row",
-        reps: "15-12",
+        name: "Bent-Over Barbell Row / Bench-Supported Row",
+        reps: "10-12",
         sets: "3 sets",
         category: "Back",
-        note: "1st Week Option",
+        note: "#1 BACK START (MAX POWER). Do this first when strongest. Week 1: Bent-over row (heavy). Week 2: Bench-supported row (strict). ONLY ONE.",
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bent-Over-Row.gif",
-          "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2024/11/chest-supported-dumbbell-row.gif?resize=600%2C600&ssl=1",
+          "https://www.strengthlog.com/wp-content/uploads/2024/11/chest-supported-dumbbell-row.gif",
         ],
         video: [
-          "https://youtube.com/embed/MXfyuB6DjWE?si=QhSv-G1q4btsOW8v",
-          "https://youtube.com/embed/czoQ_ncuqqI?si=gPfOxPYu8kglw8nE",
+          "https://www.youtube.com/embed/vT2GjY_Umpw",
+          "https://www.youtube.com/embed/czoQ_ncuqqI",
         ],
-        impact: ["Back Strengthening", "Posture Improvement"],
+        impact: [
+          "Makes back thicker",
+          "Builds pulling strength",
+          "Improves posture",
+        ],
       },
+
       {
         id: "bk-2",
-        name: "BB row prone grip",
-        reps: "15-12",
+        name: "BB Row – (Prone) Grip ",
+        reps: "10-12",
         sets: "3 sets",
         category: "Back",
-        note: "2nd Week",
+        note: "#2 BACK. Heavy but strict. Chest-supported so lower back can rest. Pull elbows toward hips.",
+        tips: ["a.k.a. Barbell Row Grip"],
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Row.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/04/Reverse-Grip-Barbell-Row.gif",
+        ],
+        video: ["https://youtube.com/embed/7SzAgsAVzMo?si=EfIrocw9W0RaOd46"],
+        impact: [
+          "Builds lower lats",
+          "Adds thickness to middle back",
+          "Improves back detail",
         ],
       },
+
       {
         id: "bk-3",
-        name: "Lat pull down",
-        reps: "15-12",
+        name: "Low Machine Row / Seated Machine Row",
+        reps: "10-12",
         sets: "3 sets",
         category: "Back",
-        note: null,
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif",
+        note: "#3 BACK MID. Machine work to keep tension high without stressing spine.",
+        tips: [
+          "a.k.a. Seated Cable Row",
+          "also ask what is Low Machine Row 😭",
         ],
-      },
-      {
-        id: "bk-4",
-        name: "Straight arm pull down",
-        reps: "15-12",
-        sets: "2 sets",
-        category: "Back",
-        note: null,
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Straight-Arm-Pulldown.gif",
-        ],
-      },
-      {
-        id: "bk-5",
-        name: "Low M/C row",
-        reps: "15-12",
-        sets: "3 sets",
-        category: "Back",
-        note: "1st Week",
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Cable-Row.gif",
         ],
+        video: ["https://www.youtube.com/embed/UCXxvVItLoM"],
+        impact: [
+          "Fills middle back",
+          "Improves back thickness",
+          "Helps rows get stronger",
+        ],
       },
+
+      {
+        id: "bk-4",
+        name: "Lat Pulldown",
+        reps: "10-12",
+        sets: "3 sets",
+        category: "Back",
+        note: "#4 BACK WIDTH. Vertical pull after rows. Stretch fully, pull elbows down.",
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif",
+        ],
+        video: ["https://www.youtube.com/embed/CAwf7n6Luuc"],
+        impact: [
+          "Makes back wider",
+          "Improves V-shape",
+          "Helps pull-up strength",
+        ],
+      },
+
+      {
+        id: "bk-5",
+        name: "Straight-Arm Pulldown",
+        reps: "10-12",
+        sets: "2 sets",
+        category: "Back",
+        note: "#5 BACK ISOLATION. Feel lats working. Arms straight, slow control.",
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/05/Cable-Straight-Arm-Pulldown.gif",
+        ],
+        video: ["https://youtube.com/embed/hAMcfubonDc?si=WWoc3ALQo2evyDXH"],
+        impact: [
+          "Improves lat connection",
+          "Sharpens back shape",
+          "Helps mind–muscle control",
+        ],
+      },
+
       {
         id: "bk-6",
-        name: "Seated row M/C",
-        reps: "15-12",
+        name: "Dumbbell Shrugs / Infinity Shrugs",
+        reps: "10-12",
         sets: "3 sets",
         category: "Back",
-        note: "2nd Week",
+        note: "#6 TRAPS. Near end. Hold top 1–2 sec. No rolling shoulders.",
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Machine-Row.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/04/Dumbbell-Shrug.gif",
+        ],
+        video: ["https://youtube.com/embed/rFsSeClGnNA?si=hu_xVfvbodle-Rfy"],
+        impact: [
+          "Builds upper traps",
+          "Makes neck look thicker",
+          "Improves shoulder stability",
         ],
       },
+
       {
         id: "bk-7",
-        name: "Shrugs DB",
-        reps: "15-12",
+        name: "Back Extension / Good Morning (≤15kg)",
+        reps: "10-12",
         sets: "3 sets",
         category: "Back",
-        note: "1st Week",
+        note: "#7 BACK FINISH. Light weight only. Strengthens lower back safely.",
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shrug.gif",
+          "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2020/05/back-extension-frontloaded.gif?resize=600%2C600&ssl=1",
+        ],
+        video: ["https://youtube.com/embed/Wpreb69h2fE?si=ttyCZnQv7Xy9Y5cb"],
+        impact: [
+          "Strengthens lower back",
+          "Protects spine",
+          "Improves posture and stability",
         ],
       },
-      {
-        id: "bk-8",
-        name: "Shrugs Infinity",
-        reps: "15-12",
-        sets: "3 sets",
-        category: "Back",
-        note: "2nd Week",
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shrug.gif",
-        ],
-      },
-      {
-        id: "bk-9",
-        name: "Back extension with plates (max 15 kg) / Good morning",
-        reps: "15-12",
-        sets: "3 sets",
-        category: "Back",
-        note: "Caution with weight",
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Back-Extension.gif",
-        ],
-      },
+
+      /* ================= BICEPS ================= */
 
       {
         id: "bi-1",
-        name: "Supination curl DB",
-        reps: "15-12",
+        name: "Supination Dumbbell Curl",
+        reps: "10-12",
         sets: "3 sets",
         category: "Biceps",
-        note: null,
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Curl.gif",
-        ],
-      },
-      {
-        id: "bi-2",
-        name: "Reverse curl cable prone 1st W / Hammer curl 2nd W",
-        reps: "15-12",
-        sets: "2 sets",
-        category: "Biceps",
-        note: "Week Dependent",
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Cable-Reverse-Curl.gif",
-        ],
-      },
-      {
-        id: "bi-3",
-        name: "Concentration Curl / Preacher curl",
-        reps: "15-12",
-        sets: "2 sets",
-        category: "Biceps",
-        note: null,
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Concentration-Curl.gif",
-        ],
-      },
-      {
-        id: "bi-4",
-        name: "Barbell / Cable Biceps curl",
-        reps: "15-12",
-        sets: "2 sets",
-        category: "Biceps",
-        note: null,
+        note: "#8 BICEPS START. Arms fresh. Rotate wrist fully for peak.",
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Curl.gif",
         ],
+        video: ["https://youtube.com/embed/MKWBV29S6c0?si=gdG5ELu4hftkT5li"],
+        impact: [
+          "Builds biceps peak",
+          "Improves arm shape",
+          "Adds front arm size",
+        ],
       },
+
       {
-        id: "bi-5",
-        name: "Gorilla Gripper",
-        reps: "15-12",
-        sets: "3 sets",
-        category: "Forearm",
-        note: null,
-      },
-      {
-        id: "bi-6",
-        name: "DB forearms curl",
-        reps: "15-12",
-        sets: "3 sets",
-        category: "Forearm",
-        note: null,
+        id: "bi-2",
+        name: "Reverse Cable Curl / Hammer Curl",
+        reps: "10-12",
+        sets: "2 sets",
+        category: "Biceps",
+        note: "#9 BICEPS. Adds arm thickness. Keep elbows fixed.",
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Wrist-Curl.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/04/Seated-Hammer-Curl.gif",
+        ],
+        video: ["https://youtube.com/embed/vm0zV_WQerE?si=gYGaao8dKT6-s3Vk"],
+        impact: [
+          "Makes arms thicker",
+          "Improves forearm strength",
+          "Helps arms look bigger",
+        ],
+      },
+
+      {
+        id: "bi-3",
+        name: "Concentration Curl / Preacher Curl",
+        reps: "10-12",
+        sets: "2 sets",
+        category: "Biceps",
+        note: "#10 BICEPS ISOLATION. Strict reps only. No cheating.",
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Concentration-Curl.gif",
+          "https://www.inspireusafoundation.org/file/2022/03/ez-bar-preacher-curl.gif",
+        ],
+        video: [
+          "https://youtube.com/embed/EjUnEEfTSEY?si=Y7arnZZDupSnpN4H",
+          "https://youtube.com/embed/7ixqAPO6JvU?si=oooquM5yRSFqyLyN",
+        ],
+        impact: [
+          "Improves biceps definition",
+          "Sharpens arm look",
+          "Better muscle control",
+        ],
+      },
+
+      {
+        id: "bi-4",
+        name: "Barbell Curl / Cable Curl",
+        reps: "10-12",
+        sets: "2 sets",
+        category: "Biceps",
+        note: "#11 BICEPS MASS. Controlled weight. No swinging.",
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Curl.gif",
+          "https://www.inspireusafoundation.org/file/2022/12/cable-drag-curl.gif",
+        ],
+        video: [
+          "https://youtube.com/embed/54x2WF1_Suc?si=Krs73Ki6rbcjMNkV",
+          "https://youtube.com/embed/CrbTqNOlFgE?si=9P9Ho07OdqTBslMN",
+        ],
+        impact: [
+          "Adds arm mass",
+          "Improves curl strength",
+          "Builds overall arm size",
+        ],
+      },
+
+      /* ================= FOREARMS ================= */
+
+      {
+        id: "fa-1",
+        name: "Gorilla Gripper",
+        reps: "10-12",
+        sets: "3 sets",
+        category: "Forearm",
+        image: [
+          "https://5.imimg.com/data5/SELLER/Default/2021/9/PQ/YD/CM/12736245/gorilla-gripper-1000x1000.jpg",
+        ],
+        note: "#12 FOREARMS. Grip work. Squeeze hard every rep.",
+        impact: [
+          "Improves grip strength",
+          "Strengthens fingers",
+          "Helps all pulling exercises",
+        ],
+      },
+
+      {
+        id: "fa-2",
+        name: "Dumbbell Wrist Curl",
+        reps: "10-12",
+        sets: "2 sets",
+        category: "Forearm",
+        note: "#13 FINAL EXERCISE. Slow reps. Full range.",
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/06/Dumbbell-Wrist-Curl.gif",
+        ],
+        video: ["https://youtube.com/embed/M8TpHw5aYgA?si=af_0A8zrxs6aQZBN"],
+        impact: [
+          "Builds forearm size",
+          "Strengthens wrists",
+          "Makes arms look thicker",
         ],
       },
     ],
-
     // ===========================================
     // TUESDAY: CARDIO & CRUNCHES
     // ===========================================
