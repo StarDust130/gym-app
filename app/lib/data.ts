@@ -728,11 +728,11 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "10-12",
         sets: "3 Main Sets",
         category: "Legs",
-        note: "#1 COMPOUND. Do first while fresh. Focus on depth and control. #DO (Hack Squat then move to Barbell Squat later).",
+        note: "#1 HARDEST & MOST IMPORTANT. Do FIRST when you have maximum strength. If barbell feels heavy, start with Hack Squat and slowly transition to Barbell Squat over weeks.",
         tips: [
-          "Brace core before descent",
-          "Push knees out",
-          "Drive up through mid-foot",
+          "Take deep breath and brace core",
+          "Push knees out while going down",
+          "Drive up through mid-foot, not toes",
         ],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/BARBELL-SQUAT.gif",
@@ -746,13 +746,32 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       },
 
       {
+        id: "leg-4",
+        name: "Leg Press",
+        reps: "10-12",
+        sets: "2 Sets",
+        category: "Legs",
+        note: "#2 HEAVY MACHINE COMPOUND. Use after squats to add volume without balance stress.",
+        tips: ["Do not lock knees", "Lower platform slowly and controlled"],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif",
+        ],
+        video: ["https://youtube.com/embed/EotSw18oR9w?si=sWRVUvAy84KwsBfk"],
+        impact: ["Quads", "Overall leg volume"],
+      },
+
+      {
         id: "leg-2",
         name: "Forward Lunges",
         reps: "10-12",
         sets: "2 Sets",
         category: "Legs",
-        note: "1st Week. Step forward, stay balanced.",
-        tips: ["Long step", "Back knee soft touch", "Upright torso"],
+        note: "#3 UNILATERAL STRENGTH. Do when legs are warm but not exhausted.",
+        tips: [
+          "Take long step forward",
+          "Back knee lightly touches floor",
+          "Chest upright, core tight",
+        ],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lunge.gif",
         ],
@@ -766,8 +785,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "10-12",
         sets: "2 Sets",
         category: "Legs",
-        note: "2nd Week. Easier on knees than forward lunges.",
-        tips: ["Step back slowly", "Front knee stable"],
+        note: "#4 KNEE-FRIENDLY LUNGE. Easier on knees than forward lunges.",
+        tips: ["Step back under control", "Front knee stays stable"],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2022/09/Dumbell-reverse-lunge.gif",
         ],
@@ -776,28 +795,13 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       },
 
       {
-        id: "leg-4",
-        name: "Leg Press",
-        reps: "10-12",
-        sets: "2 Sets",
-        category: "Legs",
-        note: "1st Week. Controlled reps, full depth.",
-        tips: ["Do not lock knees", "Feet shoulder-width"],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif",
-        ],
-        video: ["https://youtube.com/embed/EotSw18oR9w?si=sWRVUvAy84KwsBfk"],
-        impact: ["Quads", "Overall leg volume"],
-      },
-
-      {
         id: "leg-5",
         name: "Leg Extension",
         reps: "10-12",
         sets: "2 Sets",
         category: "Legs",
-        note: "2nd Week. Isolation after compounds.",
-        tips: ["Pause 1 sec at top", "Slow negatives"],
+        note: "#5 QUAD ISOLATION. Do only after heavy leg work.",
+        tips: ["Pause 1 sec at top", "Slow negative reps"],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/LEG-EXTENSION.gif",
         ],
@@ -806,12 +810,27 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       },
 
       {
+        id: "leg-9",
+        name: "Leg Curl",
+        reps: "10-12",
+        sets: "2 Sets",
+        category: "Legs",
+        note: "#6 HAMSTRINGS. Balance quads and protect knees.",
+        tips: ["Slow eccentric", "Do not lift hips"],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/08/Seated-Leg-Curl.gif",
+        ],
+        video: ["https://youtube.com/embed/_lgE0gPvbik?si=WNsOc1jeRc9R42QC"],
+        impact: ["Hamstrings"],
+      },
+
+      {
         id: "leg-6",
         name: "Hip Thrust",
         reps: "10-12",
         sets: "3 Sets",
         category: "Legs",
-        note: "Optional. Add if recovery is good.",
+        note: "#7 OPTIONAL GLUTE FOCUS. Add only if energy is left.",
         tips: ["Chin tucked", "Full hip lockout"],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Hip-Thrust.gif",
@@ -826,8 +845,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "10-12",
         sets: "3 Sets",
         category: "Legs",
-        note: "Slow reps, full stretch.",
-        tips: ["Pause at top", "Stretch at bottom"],
+        note: "#8 CALVES (GASTROCNEMIUS). Heavy stretch and squeeze.",
+        tips: ["Pause at top", "Full stretch at bottom"],
         image: [
           "https://burnfit.io/wp-content/uploads/2023/11/STD_CALF_RAISE.gif",
           "https://training.fit/wp-content/uploads/2020/03/wadenheben-stehend-geraet.png",
@@ -842,8 +861,8 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         reps: "10-12",
         sets: "4 Sets",
         category: "Legs",
-        note: "Targets soleus muscle.",
-        tips: ["Short ROM", "Constant tension"],
+        note: "#9 DEEP CALF (SOLEUS). Do after standing calves.",
+        tips: ["Short controlled range", "Constant tension"],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/06/Lever-Seated-Calf-Raise.gif",
         ],
@@ -852,35 +871,19 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       },
 
       {
-        id: "leg-9",
-        name: "Leg Curl",
-        reps: "10-12",
-        sets: "2 Sets",
-        category: "Legs",
-        note: "Hamstring isolation.",
-        tips: ["Slow eccentric", "Do not lift hips"],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/08/Seated-Leg-Curl.gif",
-        ],
-        video: ["https://youtube.com/embed/_lgE0gPvbik?si=WNsOc1jeRc9R42QC"],
-        impact: ["Hamstrings"],
-      },
-
-      {
         id: "leg-10",
         name: "Toe Raise",
         reps: "20 sec hold",
         sets: "1",
         category: "Legs",
-        note: "Foot & ankle strength.",
-        tips: ["Barefoot if possible"],
+        note: "#10 FINISHER. Shin & ankle strength. Injury prevention.",
+        tips: ["Slow controlled movement"],
         image: [
-          "https://intowellness.in/wp-content/uploads/2024/10/Tibia_Dorsal_Flexion_Machine.jpg",
+         "https://m.media-amazon.com/images/I/61r+fVBDPrL._SX679_.jpg" , "https://intowellness.in/wp-content/uploads/2024/10/Tibia_Dorsal_Flexion_Machine.jpg",
         ],
         video: ["https://youtube.com/embed/0LSazUIfThI?si=JximLVaseWHczWPy"],
         impact: ["Tibialis anterior"],
       },
-
       /* ================= SHOULDER ================= */
 
       {
