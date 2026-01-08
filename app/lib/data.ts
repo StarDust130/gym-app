@@ -756,7 +756,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lunge.gif",
         ],
-        video: ["https://www.youtube.com/embed/QOVaHwm-Q6U"],
+        video: ["https://youtube.com/embed/YSuIZ6CbOQs?si=KdY87VwHtJpSk82i"],
         impact: ["Quads", "Glutes", "Balance"],
       },
 
@@ -769,9 +769,9 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         note: "2nd Week. Easier on knees than forward lunges.",
         tips: ["Step back slowly", "Front knee stable"],
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Reverse-Lunge.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2022/09/Dumbell-reverse-lunge.gif",
         ],
-        video: ["https://www.youtube.com/embed/rvqLVxYqEvo"],
+        video: ["https://youtube.com/embed/38xlLGfguz4?si=fiwSRVEVK5kbsKHG"],
         impact: ["Glutes", "Hamstrings"],
       },
 
