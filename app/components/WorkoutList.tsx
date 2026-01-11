@@ -59,55 +59,58 @@ export function WorkoutList({
   isLoading = false,
   onToggle,
 }: WorkoutListProps) {
-  // 1. Group & Sort Logic
   const groupedData = useMemo(() => {
     if (!exercises.length) return null;
 
-    const groups: Record<string, WorkoutExercise[]> = {};
-    exercises.forEach((ex) => {
+    /**
+     * IMPORTANT:
+     * - Do NOT reorder exercises
+     * - Respect original array order
+     */
+    const groups: {
+      category: string;
+      items: WorkoutExercise[];
+    }[] = [];
+
+    const categoryMap = new Map<string, WorkoutExercise[]>();
+
+    for (const ex of exercises) {
       const cat = ex.category || "General";
-      if (!groups[cat]) groups[cat] = [];
-      groups[cat].push(ex);
-    });
 
-    const CATEGORY_ORDER = [
-      "Legs",
-      "Shoulder",
-      "Chest",
-      "Triceps",
-      "Back",
-      "Biceps",
-      "Abs",
-      "Cardio",
-    ];
+      if (!categoryMap.has(cat)) {
+        categoryMap.set(cat, []);
+        groups.push({ category: cat, items: categoryMap.get(cat)! });
+      }
 
-    const sortedCategories = Object.keys(groups).sort(
-      (a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)
-    );
+      categoryMap.get(cat)!.push(ex);
+    }
 
-    return sortedCategories.map((cat) => {
-      const sortedExercises = groups[cat].sort((a, b) => {
-        const aDone = completedIds.includes(a.id);
-        const bDone = completedIds.includes(b.id);
-        return Number(aDone) - Number(bDone);
-      });
-      return { category: cat, items: sortedExercises };
+    /**
+     * OPTIONAL UX:
+     * Move completed exercises to bottom
+     * WITHOUT changing original order
+     */
+    return groups.map((group) => {
+      const pending = group.items.filter((e) => !completedIds.includes(e.id));
+      const done = group.items.filter((e) => completedIds.includes(e.id));
+
+      return {
+        category: group.category,
+        items: [...pending, ...done],
+      };
     });
   }, [exercises, completedIds]);
 
-  // 2. Loading State
   if (isLoading) return <LoadingSkeleton />;
 
-  // 3. Empty State
   if (!groupedData || groupedData.length === 0) {
     return <RestDayCard />;
   }
 
-  // 4. Render
   return (
     <LayoutGroup>
       <motion.div
-        className="w-full max-w-3xl mx-auto pb-32 space-y-12 relative"
+        className="w-full max-w-3xl mx-auto pb-32 space-y-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -115,57 +118,23 @@ export function WorkoutList({
           const completedCount = group.items.filter((i) =>
             completedIds.includes(i.id)
           ).length;
-          const totalCount = group.items.length;
-          const isCategoryDone =
-            completedCount === totalCount && totalCount > 0;
 
           return (
-            <div key={group.category} className="relative">
-              {/* STICKY HEADER - Fixed position and z-index */}
-              <div className="  mb-6 px-2 pointer-events-none">
-                <motion.div
-                  layout
-                  className={cn(
-                    "inline-flex items-center gap-3 px-5 py-2 rounded-full border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-colors duration-300 pointer-events-auto",
-                    isCategoryDone ? "bg-[#B8FF9F]" : "bg-black"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "text-xs font-black uppercase tracking-widest",
-                      isCategoryDone ? "text-black" : "text-white"
-                    )}
-                  >
+            <div key={group.category}>
+              {/* CATEGORY HEADER */}
+              <div className="mb-5 px-2">
+                <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border-2 border-black bg-black text-white shadow">
+                  <span className="text-xs font-black uppercase tracking-widest">
                     {group.category}
                   </span>
-
-                  <span
-                    className={cn(
-                      "text-[10px] font-bold px-2 py-0.5 rounded-full",
-                      isCategoryDone
-                        ? "bg-black text-[#B8FF9F]"
-                        : "bg-white text-black"
-                    )}
-                  >
-                    {completedCount}/{totalCount}
+                  <span className="text-[10px] font-bold bg-white text-black px-2 py-0.5 rounded-full">
+                    {completedCount}/{group.items.length}
                   </span>
-
-                  <AnimatePresence>
-                    {isCategoryDone && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Check className="w-4 h-4 text-black stroke-[4]" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                </div>
               </div>
 
-              {/* CARD LIST */}
-              <motion.div layout className="space-y-5 px-1 relative z-20">
+              {/* EXERCISES */}
+              <motion.div layout className="space-y-4 px-1">
                 <AnimatePresence>
                   {group.items.map((exercise) => (
                     <ExerciseCard
@@ -180,50 +149,8 @@ export function WorkoutList({
             </div>
           );
         })}
-
-        {/* FINAL CELEBRATION CARD */}
-        <AnimatePresence>
-          {exercises.every((e) => completedIds.includes(e.id)) &&
-            exercises.length > 0 && (
-              <motion.div
-                initial={{ y: 50, opacity: 0, scale: 0.9 }}
-                animate={{
-                  y: 0,
-                  opacity: 1,
-                  scale: 1,
-                  transition: { type: "spring", bounce: 0.5 },
-                }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="mx-4"
-              >
-                <div className="bg-[#FFD27D] border-[3px] border-black rounded-[40px] p-10 shadow-[8px_8px_0px_0px_#000] flex flex-col items-center justify-center text-center relative overflow-hidden">
-                  {/* Decorative background elements */}
-                 
-                  <motion.div
-                    animate={{
-                      rotate: [0, -10, 10, -10, 0],
-                      scale: [1, 1.1, 1.1, 1],
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 2,
-                      ease: "easeInOut",
-                    }}
-                    className="mb-6 relative z-10"
-                  >
-                    <Trophy className="w-20 h-20 text-black stroke-[1.5] fill-white" />
-                  </motion.div>
-                  <h2 className="text-4xl font-black uppercase italic tracking-tighter text-black relative z-10">
-                    Workout Crushed!
-                  </h2>
-                  <p className="font-bold text-lg text-black/80 mt-2 relative z-10">
-                    You're an animal. See you tomorrow.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-        </AnimatePresence>
       </motion.div>
     </LayoutGroup>
   );
 }
+
