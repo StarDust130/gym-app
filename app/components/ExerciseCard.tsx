@@ -446,6 +446,7 @@ const LogModal = ({ lastLog, onClose, onSave }: any) => {
             <X className="w-5 h-5 hover:scale-110" />
           </button>
         </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-3">
             <div className="space-y-1 flex-1">
@@ -472,6 +473,26 @@ const LogModal = ({ lastLog, onClose, onSave }: any) => {
               />
             </div>
           </div>
+
+          {/* --- GROWTH TIP UI (Fixed: Emerald Green) --- */}
+          <div className="flex items-start gap-2.5 rounded-xl border-2 border-black bg-emerald-50 p-2.5">
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 border border-black shadow-[1px_1px_0px_0px_#000]">
+              <TrendingUp className="h-3 w-3 text-white stroke-[3]" />
+            </div>
+            <div className="space-y-0.5">
+              <h5 className="text-[9px] font-black uppercase tracking-wide text-emerald-900">
+                Growth Hack
+              </h5>
+              <p className="text-[10px] font-bold leading-tight text-emerald-800/90">
+                If you can lift{" "}
+                <span className="text-black underline decoration-red-400 decoration-2">
+                  3 sets of 12 reps
+                </span>{" "}
+                easily, it's time to increase the weight!
+              </p>
+            </div>
+          </div>
+
           <button
             type="submit"
             className="w-full rounded-xl border-[3px] border-black bg-[#B8FF9F] py-3 text-sm font-black uppercase tracking-widest shadow-[3px_3px_0px_0px_#000] active:translate-y-[2px] active:shadow-none flex justify-center gap-2"
