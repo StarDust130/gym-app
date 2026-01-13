@@ -18,7 +18,6 @@ import {
   Save,
   TrendingUp,
   Edit2,
-  Target,
   Goal,
 } from "lucide-react";
 import { WorkoutExercise } from "../lib/data";
@@ -34,55 +33,21 @@ type ExerciseLog = {
   date: string;
 };
 
-// --- CHAOS CONFETTI LOGIC ---
+// --- CHAOS CONFETTI ---
 const triggerRandomConfetti = () => {
   const random = (min: number, max: number) =>
     Math.random() * (max - min) + min;
 
-  const allColors = [
-    "#FF5555",
-    "#B8FF9F",
-    "#FFE27A",
-    "#000000",
-    "#a29bfe",
-    "#0984e3",
-    "#fd79a8",
-    "#e17055",
-  ];
-
+  const allColors = ["#FF5555", "#B8FF9F", "#FFE27A", "#000000"];
   const shuffledColors = allColors.sort(() => 0.5 - Math.random()).slice(0, 4);
 
-  const availableShapes = ["square", "circle", "star"];
-  const randomShape =
-    availableShapes[Math.floor(Math.random() * availableShapes.length)];
-  const useMix = Math.random() > 0.5;
-  const shapes = useMix
-    ? availableShapes
-    : [randomShape as "square" | "circle" | "star"];
-
-  const count = 200;
-  const defaults = {
-    origin: { y: 0.7 },
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
     colors: shuffledColors,
-    shapes: shapes,
-    ticks: 200,
-    gravity: 0.8,
-    scalar: random(0.8, 1.4),
-  };
-
-  function fire(particleRatio: number, opts: any) {
-    confetti({
-      ...defaults,
-      ...opts,
-      particleCount: Math.floor(count * particleRatio),
-    });
-  }
-
-  fire(0.25, { spread: 26, startVelocity: 55 });
-  fire(0.2, { spread: 60 });
-  fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-  fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-  fire(0.1, { spread: 120, startVelocity: 45 });
+    disableForReducedMotion: true,
+  });
 };
 
 // --- SMART LOGIC ---
@@ -165,7 +130,7 @@ export const ExerciseCard = ({
     e.stopPropagation();
     if (!isCompleted) {
       triggerRandomConfetti();
-      setIsOpen(false); // <--- ADDED: Close the card immediately on success
+      setIsOpen(false);
     }
     onToggle();
   };
@@ -179,9 +144,11 @@ export const ExerciseCard = ({
         isOpen
           ? "shadow-[8px_8px_0px_0px_#000]"
           : "shadow-[4px_4px_0px_0px_#000] hover:shadow-[6px_6px_0px_0px_#000] hover:-translate-y-0.5",
-        // No grayscale, just slightly dimmed opacity
+
+        // --- FIX: GRAYED OUT LOOK FOR COMPLETED ---
+        // Opacity reduced, Grayscale high, Background Gray
         isCompleted &&
-          "opacity-90 bg-neutral-50 shadow-none hover:translate-y-0"
+          "bg-neutral-100 border-neutral-400 opacity-60 grayscale-[0.8] shadow-none hover:translate-y-0 hover:shadow-none"
       )}
     >
       {/* HEADER */}
@@ -195,7 +162,10 @@ export const ExerciseCard = ({
           onClick={handleCheckClick}
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[3px] border-black transition-colors shadow-[2px_2px_0px_0px_#000]",
-            isCompleted ? "bg-[#FF5555]" : "bg-white hover:bg-neutral-50"
+            // Red when active (to entice clicking), Gray when done
+            isCompleted
+              ? "bg-neutral-400 border-neutral-500 shadow-none"
+              : "bg-white hover:bg-neutral-50"
           )}
         >
           <AnimatePresence>
@@ -217,14 +187,14 @@ export const ExerciseCard = ({
             className={cn(
               "font-black text-base uppercase tracking-tight text-black",
               isOpen ? "whitespace-normal" : "truncate",
-              isCompleted && "line-through text-neutral-400"
+              isCompleted && "line-through text-neutral-500"
             )}
           >
             {exercise.name}
           </h3>
           {isCompleted ? (
-            <span className="mt-1 text-[10px] z-50 font-black uppercase text-[#FF5555] tracking-widest animate-pulse">
-              🔥 You Crushed It!
+            <span className="mt-1 text-[10px] z-50 font-black uppercase text-neutral-500 tracking-widest">
+              🏁 Completed
             </span>
           ) : (
             <div className="flex gap-2 mt-1">
@@ -236,7 +206,10 @@ export const ExerciseCard = ({
 
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
-          className="rounded-full border-2 border-black p-1 bg-white shrink-0"
+          className={cn(
+            "rounded-full border-2 border-black p-1 bg-white shrink-0",
+            isCompleted && "border-neutral-400 bg-transparent"
+          )}
         >
           <ChevronDown className="h-5 w-5 stroke-[3]" />
         </motion.div>
@@ -252,7 +225,7 @@ export const ExerciseCard = ({
             className="overflow-hidden bg-neutral-50"
           >
             <div className="p-3 space-y-3 border-t-[3px] border-black relative">
-              {/* --- 1. COMPACT STATS CARD (Top) --- */}
+              {/* --- 1. STATS CARD --- */}
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -261,7 +234,6 @@ export const ExerciseCard = ({
                 className="mt-1 group relative cursor-pointer overflow-hidden rounded-xl border-2 border-black bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-y-px hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all"
               >
                 <div className="flex items-center gap-2.5 p-2.5">
-                  {/* Status Circle */}
                   <div
                     className={cn(
                       "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-black shadow-[1px_1px_0px_0px_#000] transition-colors",
@@ -274,8 +246,6 @@ export const ExerciseCard = ({
                       <TrendingUp className="w-4 h-4 text-neutral-500 stroke-[3]" />
                     )}
                   </div>
-
-                  {/* Stats */}
                   <div className="flex-1 min-w-0 flex flex-col justify-center">
                     {lastLog ? (
                       <>
@@ -306,8 +276,6 @@ export const ExerciseCard = ({
                       </span>
                     )}
                   </div>
-
-                  {/* Edit Btn */}
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-transparent hover:border-black hover:bg-neutral-100 transition-all">
                     {lastLog ? (
                       <Edit2 className="w-3.5 h-3.5" />
@@ -316,8 +284,6 @@ export const ExerciseCard = ({
                     )}
                   </div>
                 </div>
-
-                {/* Feedback Strip */}
                 {lastLog && (
                   <div className="flex items-center gap-2 border-t-2 border-black bg-[#8be9fa] px-3 py-1">
                     <div className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-black bg-white">
@@ -330,7 +296,7 @@ export const ExerciseCard = ({
                 )}
               </div>
 
-              {/* --- 2. TIPS STICKY NOTE (Middle) --- */}
+              {/* --- 2. TIPS --- */}
               {(exercise.note ||
                 (exercise.tips && exercise.tips.length > 0)) && (
                 <div className="relative rotate-1 rounded-sm border-2 border-black bg-[#FFEDA6] p-2.5 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]">
@@ -359,7 +325,7 @@ export const ExerciseCard = ({
                 </div>
               )}
 
-              {/* --- 3. MEDIA WINDOW (Bottom) --- */}
+              {/* --- 3. MEDIA --- */}
               <div className="space-y-1.5">
                 <div className="flex rounded-lg border-2 border-black bg-white p-0.5 shadow-[1px_1px_0px_0px_#000]">
                   <TabButton
@@ -391,22 +357,18 @@ export const ExerciseCard = ({
                 >
                   {tab !== "Impact" && !isMediaLoading && hasMultiple && (
                     <>
-                      {mediaIndex > 0 && (
-                        <button
-                          onClick={prevMedia}
-                          className="absolute left-2 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white border-2 border-black p-1 hover:scale-110"
-                        >
-                          <ChevronLeft className="h-3 w-3" />
-                        </button>
-                      )}
-                      {mediaIndex < currentMediaList.length - 1 && (
-                        <button
-                          onClick={nextMedia}
-                          className="absolute right-2 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white border-2 border-black p-1 hover:scale-110"
-                        >
-                          <ChevronRight className="h-3 w-3" />
-                        </button>
-                      )}
+                      <button
+                        onClick={prevMedia}
+                        className="absolute left-2 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white border-2 border-black p-1 hover:scale-110"
+                      >
+                        <ChevronLeft className="h-3 w-3" />
+                      </button>
+                      <button
+                        onClick={nextMedia}
+                        className="absolute right-2 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white border-2 border-black p-1 hover:scale-110"
+                      >
+                        <ChevronRight className="h-3 w-3" />
+                      </button>
                     </>
                   )}
                   {isMediaLoading && tab !== "Impact" && (
@@ -451,10 +413,6 @@ export const ExerciseCard = ({
                   )}
                 </motion.div>
               </div>
-
-              <div className="flex justify-center opacity-10 pb-2">
-                <Dumbbell className="w-6 h-6" />
-              </div>
             </div>
           </motion.div>
         )}
@@ -474,8 +432,7 @@ export const ExerciseCard = ({
   );
 };
 
-// --- SUBCOMPONENTS ---
-
+// --- SUBCOMPONENTS (LogModal, Badge, TabButton - Keep same) ---
 const LogModal = ({ lastLog, onClose, onSave }: any) => {
   const [weight, setWeight] = useState(lastLog?.weight?.toString() || "");
   const [reps, setReps] = useState(lastLog?.reps?.toString() || "");
@@ -508,7 +465,6 @@ const LogModal = ({ lastLog, onClose, onSave }: any) => {
             <X className="w-5 h-5 hover:scale-110" />
           </button>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-3">
             <div className="space-y-1 flex-1">
@@ -535,8 +491,6 @@ const LogModal = ({ lastLog, onClose, onSave }: any) => {
               />
             </div>
           </div>
-
-          {/* --- GROWTH TIP UI --- */}
           <div className="flex items-start gap-2.5 rounded-xl border-2 border-black bg-emerald-50 p-2.5">
             <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 border border-black shadow-[1px_1px_0px_0px_#000]">
               <TrendingUp className="h-3 w-3 text-white stroke-[3]" />
@@ -550,11 +504,10 @@ const LogModal = ({ lastLog, onClose, onSave }: any) => {
                 <span className="text-black underline decoration-red-400 decoration-2">
                   3 sets of 12 reps
                 </span>{" "}
-                easily, it's time to increase the weight!
+                easily, increase weight!
               </p>
             </div>
           </div>
-
           <button
             type="submit"
             className="w-full rounded-xl border-[3px] border-black bg-[#B8FF9F] py-3 text-sm font-black uppercase tracking-widest shadow-[3px_3px_0px_0px_#000] active:translate-y-[2px] active:shadow-none flex justify-center gap-2"
@@ -566,7 +519,6 @@ const LogModal = ({ lastLog, onClose, onSave }: any) => {
     </div>
   );
 };
-
 const Badge = ({ text, color }: { text: string; color: string }) => (
   <span
     className={cn(
