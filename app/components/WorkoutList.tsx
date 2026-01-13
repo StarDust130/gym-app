@@ -1,23 +1,37 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-
 import { ExerciseCard } from "./ExerciseCard";
-import { Check, Trophy } from "lucide-react";
-import { cn } from "@/lib/utils"; // Adjust path
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { WorkoutExercise } from "../lib/data";
 
 // --- Types ---
 type WorkoutListProps = {
   exercises: WorkoutExercise[];
   completedIds: string[];
-  dayLabel: string;
   isLoading?: boolean;
   onToggle: (exerciseId: string) => void;
 };
 
-// --- Helper: Cool Shimmer Skeleton Loader ---
+// --- STRETCHING DATA ---
+const STRETCHING_EXERCISE: WorkoutExercise = {
+  id: "daily_stretch_routine",
+  name: "Full Body Decompression",
+  category: "Recovery",
+  sets: 1,
+  reps: 1,
+  note: "5-10 Minutes",
+  image: [
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtY2lvb2t5eHdvZ3JqbzF3a2t5eHdvZ3JqbzF3a2t5eHdvZ3JqbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7Twyu6d8WdbBHg1q/giphy.gif",
+  ],
+  video: [],
+  impact: ["Spine", "Hips", "Hamstrings"],
+  tips: ["Hold poses for 30s", "Deep nasal breathing", "Relax into discomfort"],
+};
+
+// --- Helper: Skeleton ---
 const LoadingSkeleton = () => (
   <div className="space-y-6 w-full max-w-3xl mx-auto px-2 mt-8">
     {[1, 2, 3].map((i) => (
@@ -31,7 +45,7 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-// --- Helper: Rest Day Card ---
+// --- Helper: Rest Day ---
 const RestDayCard = () => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -59,58 +73,51 @@ export function WorkoutList({
   isLoading = false,
   onToggle,
 }: WorkoutListProps) {
+  // Collapsible State
+  const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
+
+  const toggleSection = (category: string) => {
+    setCollapsedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  // 1. INJECT STRETCHING
+  const finalExercises = useMemo(() => {
+    if (!exercises.length) return [];
+    const today = new Date().getDay();
+    if (today !== 0) {
+      return [...exercises, STRETCHING_EXERCISE];
+    }
+    return exercises;
+  }, [exercises]);
+
+  // 2. GROUPING
   const groupedData = useMemo(() => {
-    if (!exercises.length) return null;
-
-    /**
-     * IMPORTANT:
-     * - Do NOT reorder exercises
-     * - Respect original array order
-     */
-    const groups: {
-      category: string;
-      items: WorkoutExercise[];
-    }[] = [];
-
+    if (!finalExercises.length) return null;
+    const groups: { category: string; items: WorkoutExercise[] }[] = [];
     const categoryMap = new Map<string, WorkoutExercise[]>();
 
-    for (const ex of exercises) {
+    for (const ex of finalExercises) {
       const cat = ex.category || "General";
-
       if (!categoryMap.has(cat)) {
         categoryMap.set(cat, []);
         groups.push({ category: cat, items: categoryMap.get(cat)! });
       }
-
       categoryMap.get(cat)!.push(ex);
     }
-
-    /**
-     * OPTIONAL UX:
-     * Move completed exercises to bottom
-     * WITHOUT changing original order
-     */
-    return groups.map((group) => {
-      const pending = group.items.filter((e) => !completedIds.includes(e.id));
-      const done = group.items.filter((e) => completedIds.includes(e.id));
-
-      return {
-        category: group.category,
-        items: [...pending, ...done],
-      };
-    });
-  }, [exercises, completedIds]);
+    return groups;
+  }, [finalExercises]);
 
   if (isLoading) return <LoadingSkeleton />;
-
-  if (!groupedData || groupedData.length === 0) {
-    return <RestDayCard />;
-  }
+  if (!groupedData || groupedData.length === 0) return <RestDayCard />;
 
   return (
     <LayoutGroup>
       <motion.div
-        className="w-full max-w-3xl mx-auto pb-32 space-y-12"
+        className="w-full max-w-3xl mx-auto pb-32 space-y-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -118,34 +125,114 @@ export function WorkoutList({
           const completedCount = group.items.filter((i) =>
             completedIds.includes(i.id)
           ).length;
+          const totalCount = group.items.length;
+          const isAllDone = completedCount === totalCount && totalCount > 0;
+          const progressPercent = (completedCount / totalCount) * 100;
+          const isCollapsed = collapsedCategories.includes(group.category);
 
           return (
-            <div key={group.category}>
-              {/* CATEGORY HEADER */}
-              <div className="mb-5 px-2">
-                <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border-2 border-black bg-black text-white shadow">
-                  <span className="text-xs font-black uppercase tracking-widest">
-                    {group.category}
-                  </span>
-                  <span className="text-[10px] font-bold bg-white text-black px-2 py-0.5 rounded-full">
-                    {completedCount}/{group.items.length}
-                  </span>
-                </div>
+            <div key={group.category} className="relative">
+              {/* --- HEADER (CLICK TO TOGGLE) --- */}
+              <div
+                onClick={() => toggleSection(group.category)}
+                className="mb-6 px-1 sticky top-4 z-20 cursor-pointer active:scale-[0.98] transition-transform"
+              >
+                <motion.div
+                  layout
+                  className={cn(
+                    "relative overflow-hidden rounded-xl border-[3px] border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-colors duration-500",
+                    isAllDone ? "bg-emerald-400" : "bg-white"
+                  )}
+                >
+                  {/* Progress Bar */}
+                  {!isAllDone && (
+                    <motion.div
+                      className="absolute inset-y-0 left-0 bg-[#FFE27A] z-0"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressPercent}%` }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 50,
+                        damping: 15,
+                      }}
+                    />
+                  )}
+
+                  <div className="relative z-10 flex items-center justify-between p-3.5">
+                    {/* Left: Name */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black font-black uppercase shadow-[2px_2px_0px_0px_#000] transition-colors",
+                          isAllDone
+                            ? "bg-white text-emerald-600"
+                            : "bg-black text-white"
+                        )}
+                      >
+                        {isAllDone ? (
+                          <Check className="w-5 h-5 stroke-[4]" />
+                        ) : (
+                          group.category.charAt(0)
+                        )}
+                      </div>
+                      <h3
+                        className={cn(
+                          "text-lg font-black uppercase tracking-tighter",
+                          isAllDone ? "text-white drop-shadow-md" : "text-black"
+                        )}
+                      >
+                        {group.category}
+                      </h3>
+                    </div>
+
+                    {/* Right: Counter + Arrow */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          "rounded-md border-2 border-black px-2 py-1 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,0.5)]",
+                          isAllDone
+                            ? "bg-white text-emerald-600"
+                            : "bg-black text-white"
+                        )}
+                      >
+                        {isAllDone ? "Done" : `${completedCount}/${totalCount}`}
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isCollapsed ? -90 : 0 }}
+                        className={cn(
+                          "rounded-full p-1 border-2 border-black bg-white",
+                          isAllDone && "opacity-80"
+                        )}
+                      >
+                        <ChevronDown className="w-4 h-4 text-black stroke-[3]" />
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
 
-              {/* EXERCISES */}
-              <motion.div layout className="space-y-4 px-1">
-                <AnimatePresence>
-                  {group.items.map((exercise) => (
-                    <ExerciseCard
-                      key={exercise.id}
-                      exercise={exercise}
-                      isCompleted={completedIds.includes(exercise.id)}
-                      onToggle={() => onToggle(exercise.id)}
-                    />
-                  ))}
-                </AnimatePresence>
-              </motion.div>
+              {/* EXERCISES (COLLAPSIBLE) */}
+              <AnimatePresence>
+                {!isCollapsed && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="space-y-5 px-1 pb-4">
+                      {group.items.map((exercise) => (
+                        <ExerciseCard
+                          key={exercise.id}
+                          exercise={exercise}
+                          isCompleted={completedIds.includes(exercise.id)}
+                          onToggle={() => onToggle(exercise.id)}
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
@@ -153,4 +240,3 @@ export function WorkoutList({
     </LayoutGroup>
   );
 }
-
