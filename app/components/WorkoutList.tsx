@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { ExerciseCard } from "./ExerciseCard";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, ChevronDown, Trophy } from "lucide-react"; // Added Trophy icon
 import { cn } from "@/lib/utils";
 import { WorkoutExercise } from "../lib/data";
 
@@ -20,15 +20,21 @@ const STRETCHING_EXERCISE: WorkoutExercise = {
   id: "daily_stretch_routine",
   name: "Full Body Decompression",
   category: "Recovery",
-  sets: 1,
-  reps: 1,
+  sets: "1",
+  reps: "1",
   note: "5-10 Minutes",
-  image: [
-    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtY2lvb2t5eHdvZ3JqbzF3a2t5eHdvZ3JqbzF3a2t5eHdvZ3JqbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7Twyu6d8WdbBHg1q/giphy.gif",
+  image: ["https://media.tenor.com/O5OplkJRnPEAAAAM/benjammins-stretch.gif"],
+  video: [
   ],
-  video: [],
-  impact: ["Spine", "Hips", "Hamstrings"],
-  tips: ["Hold poses for 30s", "Deep nasal breathing", "Relax into discomfort"],
+  impact: ["Spine", "Hips", "Hamstrings", "Shoulders", "Neck"],
+  tips: [
+    "Hold poses for 30s",
+    "Deep nasal breathing",
+    "Relax into discomfort",
+    "Focus on alignment to avoid strain",
+    "Breathe out on the stretch to deepen it",
+    "Incorporate dynamic movements before static holds",
+  ],
 };
 
 // --- Helper: Skeleton ---
@@ -65,6 +71,42 @@ const RestDayCard = () => (
     </div>
   </motion.div>
 );
+
+const CompletionCard = () => {
+  // Logic to determine the next day message based on the current day
+  const isSaturday = new Date().getDay() === 6;
+  const messageSuffix = isSaturday ? "See you on Monday!" : "See you tomorrow!";
+
+  return (
+    <motion.div
+      // Simple fade-up animation for entrance
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      // Centered layout, no borders, no background color
+      className="w-full max-w-lg mx-auto mt-16 flex flex-col items-center text-center px-4 pb-20"
+    >
+      {/* Animated Anime Dance GIF */}
+      {/* Using a clean, popular dancing anime gif */}
+      <img
+        src="https://media.tenor.com/yo0TAG-MpD0AAAAm/lonely-lonely-lonely.webp"
+        alt="Victory Dance"
+        // "object-contain" ensures the whole gif is visible without cropping
+        className="w-auto h-64 sm:h-80 object-contain drop-shadow-xl"
+      />
+
+      {/* Text Below */}
+      <div className="mt-8 space-y-3">
+        <h2 className="text-4xl font-black uppercase tracking-tighter italic text-black">
+          You Crushed It!
+        </h2>
+        <p className="text-xl font-bold text-neutral-500 uppercase tracking-widest">
+          {messageSuffix}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
 
 // --- Main Component ---
 export function WorkoutList({
@@ -110,6 +152,36 @@ export function WorkoutList({
     }
     return groups;
   }, [finalExercises]);
+
+  // 3. AUTO-COLLAPSE LOGIC (NEW)
+  useEffect(() => {
+    if (!groupedData) return;
+
+    const categoriesToCollapse: string[] = [];
+    let shouldUpdate = false;
+
+    groupedData.forEach((group) => {
+      const isComplete = group.items.every((item) =>
+        completedIds.includes(item.id)
+      );
+
+      // If complete and NOT currently collapsed, add to list
+      if (isComplete && !collapsedCategories.includes(group.category)) {
+        categoriesToCollapse.push(group.category);
+        shouldUpdate = true;
+      }
+    });
+
+    if (shouldUpdate) {
+      setCollapsedCategories((prev) => [...prev, ...categoriesToCollapse]);
+    }
+  }, [completedIds, groupedData]); // Run only when completion status changes
+
+  // 4. CHECK GLOBAL COMPLETION (NEW)
+  const isGlobalDone = useMemo(() => {
+    if (!finalExercises.length) return false;
+    return finalExercises.every((ex) => completedIds.includes(ex.id));
+  }, [finalExercises, completedIds]);
 
   if (isLoading) return <LoadingSkeleton />;
   if (!groupedData || groupedData.length === 0) return <RestDayCard />;
@@ -236,6 +308,9 @@ export function WorkoutList({
             </div>
           );
         })}
+
+        {/* --- COMPLETION CARD (NEW) --- */}
+        <AnimatePresence>{isGlobalDone && <CompletionCard />}</AnimatePresence>
       </motion.div>
     </LayoutGroup>
   );
