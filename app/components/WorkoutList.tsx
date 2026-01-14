@@ -18,7 +18,7 @@ type WorkoutListProps = {
 // --- STRETCHING DATA ---
 const STRETCHING_EXERCISE: WorkoutExercise = {
   id: "daily_stretch_routine",
-  name: "Full Body Decompression",
+  name: "Full Body Stretching",
   category: "Recovery",
   sets: "1",
   reps: "1",
