@@ -633,46 +633,104 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     // SATURDAY: CROSSFIT & CARDIO
     // ===========================================
     "CrossFit & Cardio": [
+      /* ================= PART 1: THE CIRCUIT (20 MINS) ================= */
+      /* 4 Rounds. No Rest between moves. 90s Rest after the 4th move. */
+
       {
-        id: "sat-1",
-        name: "Cardio (any)",
-        reps: "5 min",
+        id: "cf-new",
+        name: "Renegade Rows (Pushup Position)",
+        reps: "12 Reps (Total)",
+        sets: "4 Rounds",
+        category: "CrossFit",
+        target: "🎯 GOAL: Hips stay flat (Don't twist)",
+        note: "🧱 REPLACES SLAMS. The ultimate core builder. Hold a plank, pull DB to hip.",
+        tips: [
+          "Feet wide for balance",
+          "Squeeze abs hard (pretend getting punched)",
+          "Row weight to hip without twisting body",
+        ],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/01/dumbbell-renegade-row-1.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2022/07/Push-Up-to-Renegade-Row.gif",
+        ],
+        video: [
+          "https://youtube.com/embed/qmZJhocQVlM?si=g3UUigzlEeOAl8Fn",
+          "https://youtube.com/embed/4E-tCquxn_4?si=gEKOU-M-GTamhERM",
+        ],
+        impact: ["Deep Core Stability", "V-Taper Back"],
+      },
+
+      {
+        id: "cf-2",
+        name: "Battle Ropes",
+        reps: "30 Seconds",
+        sets: "4 Rounds",
+        category: "CrossFit",
+        target: "🎯 GOAL: Make waves all the way to anchor",
+        note: "🌊 SHOULDER BURN. Use the heavy ropes. Go 100% intensity.",
+        tips: [
+          "Sit in a half-squat",
+          "Alternating waves fast",
+          "Keep chest up",
+        ],
+        image: ["https://burnfit.io/wp-content/uploads/2023/11/BAT_ROPE.gif"],
+        video: ["https://youtube.com/embed/ZEAqK0lXnb0?si=d1LcyM5ntzCrp_0z"],
+        impact: ["Shoulder Stamina", "Heart Rate Spike"],
+      },
+
+      {
+        id: "cf-3",
+        name: "Burpees",
+        reps: "12 Reps",
+        sets: "4 Rounds",
+        category: "CrossFit",
+        target: "🎯 GOAL: Chest to floor every time",
+        note: "💀 FAT MELTER. This burns the belly fat.",
+        tips: ["Drop fast", "Explode up", "Clap behind head"],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/10/Jack-Burpees.gif",
+          "https://i.giphy.com/lEYcevSwZ55Go.webp",
+        ],
+        video: ["https://youtube.com/embed/uK-jIQxnHec?si=uwatSeQx7akgG76n"],
+        impact: ["Total Body Conditioning", "Calorie Burn"],
+      },
+
+      {
+        id: "cf-4",
+        name: "Kettlebell Swing (or DB Swing)",
+        reps: "15 Reps",
+        sets: "4 Rounds",
+        category: "CrossFit",
+        target: "🎯 GOAL: Snap the hips",
+        note: "🍑 POSTERIOR CHAIN. Hits the weak legs and lower back.",
+        tips: [
+          "Hinge at hips (butt back)",
+          "Squeeze glutes to launch weight",
+          "Do not use arms to lift",
+        ],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/09/Kettlebell-Swings.gif",
+        ],
+        video: ["https://youtube.com/embed/n1df4ASFeZU?si=eHDrgqhRFPWVVuhl"],
+        impact: ["Hamstrings", "Glute Power"],
+      },
+
+      /* ================= PART 2: THE FLUSH (30 MINS) ================= */
+      {
+        id: "cardio-finisher",
+        name: "Steady State Cardio (Incline Walk)",
+        reps: "30 Mins",
         sets: "1",
         category: "Cardio",
-        note: "Warmup",
-      }, // [cite: 23]
-      {
-        id: "sat-2",
-        name: "Mobility drills",
-        reps: "Duration",
-        sets: "1",
-        category: "Mobility",
-        note: null,
-      }, // [cite: 23]
-      {
-        id: "sat-3",
-        name: "Weight training / crunches",
-        reps: "Duration",
-        sets: "1",
-        category: "Circuit",
-        note: null,
-      }, // [cite: 23]
-      {
-        id: "sat-4",
-        name: "Cardio (any)",
-        reps: "30 mins",
-        sets: "1",
-        category: "Cardio",
-        note: "Low Intensity",
-      }, // [cite: 23]
-      {
-        id: "sat-5",
-        name: "Passive stretch",
-        reps: "After workout",
-        sets: "1",
-        category: "Mobility",
-        note: null,
-      }, // [cite: 23]
+        target: "🎯 BURN GOAL: 300 Calories",
+        note: "🧊 COOL DOWN. Walk it off. Burn the mobilized fat.",
+        tips: ["Treadmill Incline 10-12", "Speed 3.5 - 4.0", "Deep breaths"],
+        image: [
+          "https://media.tenor.com/eXlIRe28PVgAAAAm/bubu-dudu-bubu.webp",
+          "https://media.tenor.com/HXbs_-Rwqj4AAAAm/train-trainer.webp",
+        ],
+        impact: ["Visceral Fat Loss", "Recovery"],
+      },
     ],
   },
 };
