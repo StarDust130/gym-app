@@ -22,9 +22,9 @@ export type WorkoutPlan = {
 };
 
 export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
-  planName: "Fitness Passion Gym (Intermediate)",
+  planName: "Fitness Passion Gym (Intermediate - Skinny Fat Fix)",
 
-  // ✅ CORRECTED SCHEDULE: Monday is Back & Biceps
+  // ✅ CORRECTED SCHEDULE: High Intensity to burn Trunk Fat
   schedule: {
     Monday: "Back , Biceps & Forearms",
     Tuesday: "Cardio & Crunches",
@@ -37,7 +37,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
 
   workouts: {
     // ===========================================
-    // MONDAY: BACK & BICEPS
+    // MONDAY: BACK & BICEPS (Pull Day)
     // ===========================================
     "Back , Biceps & Forearms": [
       /* ================= BACK (4 DISTINCT MOVES) ================= */
@@ -206,6 +206,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
         impact: ["Outer Forearm", "Brachioradialis"],
       },
     ],
+
     // ===========================================
     // TUESDAY: CARDIO & CRUNCHES
     // ===========================================
@@ -305,7 +306,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     ],
 
     // ===========================================
-    // WEDNESDAY: CHEST & TRICEPS
+    // WEDNESDAY: CHEST & TRICEPS (Push Day)
     // ===========================================
     "Chest & Triceps": [
       /* ================= CHEST (3 MOVES - ARMOR) ================= */
@@ -426,7 +427,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     ],
 
     // ===========================================
-    // THURSDAY: CARDIO & STRETCHING
+    // THURSDAY: CARDIO & STRETCHING (Empty the Tank)
     // ===========================================
     "Cardio Day": [
       /* ================= PHASE 1: THE IGNITER (20 MINS) ================= */
@@ -474,7 +475,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     ],
 
     // ===========================================
-    // FRIDAY: LEGS & SHOULDER
+    // FRIDAY: LEGS & SHOULDER (Volume Day)
     // ===========================================
     "Legs & Shoulder": [
       /* ================= LEGS (5 MOVES - MASS) ================= */
@@ -630,7 +631,7 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     ],
 
     // ===========================================
-    // SATURDAY: CROSSFIT & CARDIO
+    // SATURDAY: CROSSFIT & CARDIO (Metabolic Conditioning)
     // ===========================================
     "CrossFit & Cardio": [
       /* ================= PART 1: THE CIRCUIT (20 MINS) ================= */
