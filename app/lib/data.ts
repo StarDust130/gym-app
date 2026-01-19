@@ -11,6 +11,7 @@ export type WorkoutExercise = {
   image?: string[];
   video?: string[];
   impact?: string[];
+  target?: string;
   impactImage?: string;
 };
 
@@ -209,140 +210,97 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
     // TUESDAY: CARDIO & CRUNCHES
     // ===========================================
     "Cardio & Crunches": [
-      {
-        id: "abs-1",
-        name: "Sit Up (On Board)",
-        reps: "20-15",
-        sets: "3 sets",
-        category: "Abs",
-        note: "Slow and controlled movement",
-        tips: [
-          "Do not pull neck",
-          "Exhale while coming up",
-          "Keep core engaged",
-        ],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Sit-ups.gif",
-        ],
-        video: ["https://youtube.com/embed/qXpYgvQ6_m4?si=KLX2_AzMHyfQwCHv"],
-        impact: ["Upper abs", "Core endurance"],
-      },
-      {
-        id: "abs-2",
-        name: "Reverse Crunch",
-        reps: "20-15",
-        sets: "2 sets",
-        category: "Abs",
-        note: "Lift hips off the floor",
-        tips: ["Do not swing legs", "Control the negative"],
-        image: ["https://burnfit.io/wp-content/uploads/2023/11/REV_CRUNCH.gif"],
-        video: ["https://youtube.com/embed/ZyE4r7wiI6w?si=Nd4VqezMhql13e7M"],
-        impact: ["Lower abs", "Pelvic control"],
-      },
+      /* ================= CORE (4 MOVES - STRICT) ================= */
       {
         id: "abs-3",
-        name: "Leg Raise",
-        reps: "20-15",
+        name: "Hanging Leg Raise",
+        reps: "12-15",
         sets: "3 sets",
         category: "Abs",
-        note: "Lower back pressed to floor",
-        tips: ["Do not arch lower back", "Lower legs slowly"],
+        note: "🔥 LOWER ABS. Target the fat stored in your trunk. Hang strict. No swinging.",
+        tips: [
+          "🚫 Do not use momentum",
+          "🦵 Legs straight (or knees up if failing)",
+          "⬇️ Control the drop slowly",
+        ],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lying-Leg-Raise.gif",
           "https://ccuuubmtdurkmbeufybi.supabase.co/storage/v1/object/public/animations/0826.gif",
         ],
         video: ["https://youtube.com/embed/XQc0WHO90Lk?si=xf8AsOrWQ6x_ueJm"],
-        impact: ["Lower abs", "Hip flexors"],
+        impact: ["Lower Abs", "V-Cut"],
       },
       {
-        id: "abs-4",
-        name: "Double Leg Cycling",
-        reps: "20-15",
-        sets: "2 sets",
+        id: "abs-new",
+        name: "Kneeling Cable Crunch",
+        reps: "12-15",
+        sets: "3 sets",
         category: "Abs",
-        note: "Controlled cycling motion",
-        tips: ["Keep abs tight", "Avoid fast kicking"],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Bicycle-Crunch.gif",
+        note: "🧱 UPPER ABS. Use the Rope. Go Heavy. Build the blocks.",
+        tips: [
+          "🛐 Kneel down, keep hips locked",
+          "⤵️ Crunch down to the floor",
+          "💨 Exhale all air at the bottom",
         ],
-        video: ["https://www.youtube.com/embed/Iwyvozckjak"],
-        impact: ["Lower abs", "Coordination"],
-      },
-      {
-        id: "abs-5",
-        name: "Russian Twists (Legs on Floor)",
-        reps: "20-15",
-        sets: "2 sets",
-        category: "Abs",
-        note: "Rotation from core",
-        tips: ["Move shoulder to shoulder", "Do not rush reps"],
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Russian-Twist.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Kneeling-Cable-Crunch.gif",
         ],
-        video: ["https://www.youtube.com/embed/wkD8rjkodUI"],
-        impact: ["Obliques", "Rotational strength"],
-      },
-      {
-        id: "abs-6",
-        name: "Planks",
-        reps: "Hold",
-        sets: "2 sets",
-        category: "Abs",
-        note: "Hold till failure",
-        tips: ["Straight line from head to heel", "Squeeze glutes"],
-        image: ["https://www.inspireusafoundation.org/file/2022/01/plank.gif"],
-        video: ["https://youtube.com/embed/ftSgOmyQyEg?si=u6PPn6keN49-9mV8"],
-        impact: ["Core stability", "Isometric strength"],
+        video: ["https://youtube.com/embed/K2m0jj6RfYg?si=7ewaBKdG8CSJfpHP"],
+        impact: ["Six Pack Thickness", "Upper Core"],
       },
       {
         id: "abs-7",
-        name: "Side Bend with Cables",
-        reps: "20-15",
+        name: "Cable Side Bend",
+        reps: "15-20 (Per Side)",
         sets: "3 sets",
         category: "Abs",
-        note: "One side at a time",
-        tips: ["Stretch fully", "Slow controlled bend"],
+        note: "⚔️ OBLIQUES. Carve the sides. Constant tension is key.",
+        tips: [
+          "🧍 Stand straight, chest up",
+          "🏹 Let cable pull arm up high",
+          "💥 Crunch hard to the side",
+        ],
         image: [
           "https://fitnessprogramer.com/wp-content/uploads/2022/05/Side-bend.gif",
         ],
         video: ["https://youtube.com/embed/_5rpm-8ux0A?si=s_lcFg4RMCqC5Xrk"],
-        impact: ["Obliques", "Core balance"],
+        impact: ["Waist Width", "Side Definition"],
       },
       {
-        id: "abs-8",
-        name: "Caterpillar",
-        reps: "20-15",
+        id: "abs-6",
+        name: "Plank (Strict Hold)",
+        reps: "Hold 1-2 Mins",
         sets: "2 sets",
         category: "Abs",
-        note: "Dynamic core movement",
-        tips: ["aka:- Inchworm", "Keep legs straight", "Move smoothly"],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2022/01/Inchworm.gif",
+        note: "🛡️ CORE LOCK. Squeeze everything. Shake the fat off.",
+        tips: [
+          "🍑 Glutes tight (Squeeze them)",
+          "⚓ Belly button pulled to spine",
+          "📉 No sagging hips!",
         ],
-        video: ["https://youtube.com/embed/nSujRtyKaEM?si=L0FpRqZL_F2UipWp"],
-        impact: ["Full core", "Mobility"],
+        image: ["https://www.inspireusafoundation.org/file/2022/01/plank.gif"],
+        video: ["https://youtube.com/embed/ftSgOmyQyEg?si=u6PPn6keN49-9mV8"],
+        impact: ["Deep Core", "Posture"],
       },
 
-      // ✅ LIGHT CARDIO (AFTER ABS)
+      /* ================= CARDIO (HIIT - ELLIPTICAL / CYCLE) ================= */
       {
         id: "lc-1",
-        name: "Light Cardio (Treadmill / Cycling)",
-        reps: "5–10 mins",
+        name: "HIIT (Elliptical or Cycle)",
+        reps: "15-20 Mins",
         sets: "1",
-        category: "Light Cardio",
-        note: "Do after completing all abs exercises",
+        category: "Cardio",
+        target: "🎯 BURN GOAL: 300+ Calories ",
+        note: "🔥 FAT INCINERATOR. You have 10kg of trunk fat. Burn it off.",
         tips: [
-          "Low intensity only",
-          "Maintain steady breathing",
-          "No sprinting",
+          "🚶 1 Min: Moderate Pace (Recovery)",
+          "⚡ 30 Sec: MAX RESISTANCE SPRINT (100% Effort)",
+          "🔄 Repeat 10 times without stopping",
         ],
         image: [
-          "https://media.tenor.com/eXlIRe28PVgAAAAm/bubu-dudu-bubu.webp",
-          "https://media.tenor.com/HXbs_-Rwqj4AAAAm/train-trainer.webp",
           "https://media.tenor.com/lEy7Yw63vQUAAAAM/beast-mode-cardio.gif",
         ],
-
-        impact: ["Fat burning", "Active recovery", "Improves blood flow"],
+        impact: ["Visceral Fat Loss", "Stamina"],
       },
     ],
 

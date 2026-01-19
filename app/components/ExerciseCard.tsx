@@ -130,8 +130,8 @@ export const ExerciseCard = ({
       tab === "Images"
         ? exercise.image
         : tab === "Videos"
-        ? exercise.video
-        : [];
+          ? exercise.video
+          : [];
     return (rawList || []).filter((url) => url && url.trim() !== "");
   }, [tab, exercise]);
 
@@ -161,7 +161,7 @@ export const ExerciseCard = ({
 
   const handleDragEnd = (
     event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
+    info: PanInfo,
   ) => {
     const threshold = 50;
     if (
@@ -210,7 +210,7 @@ export const ExerciseCard = ({
           ? "shadow-[8px_8px_0px_0px_#000]"
           : "shadow-[4px_4px_0px_0px_#000] hover:shadow-[6px_6px_0px_0px_#000] hover:-translate-y-0.5",
         isCompleted &&
-          "bg-neutral-100 border-neutral-400 opacity-60 grayscale-[0.8] shadow-none hover:translate-y-0 hover:shadow-none"
+          "bg-neutral-100 border-neutral-400 opacity-60 grayscale-[0.8] shadow-none hover:translate-y-0 hover:shadow-none",
       )}
     >
       {/* HEADER */}
@@ -225,7 +225,7 @@ export const ExerciseCard = ({
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-[3px] border-black transition-colors shadow-[2px_2px_0px_0px_#000]",
             isCompleted
               ? "bg-neutral-400 border-neutral-500 shadow-none"
-              : "bg-white hover:bg-neutral-50"
+              : "bg-white hover:bg-neutral-50",
           )}
         >
           <AnimatePresence>
@@ -246,7 +246,7 @@ export const ExerciseCard = ({
             className={cn(
               "font-black text-base uppercase tracking-tight text-black",
               isOpen ? "whitespace-normal" : "truncate",
-              isCompleted && "line-through text-neutral-500"
+              isCompleted && "line-through text-neutral-500",
             )}
           >
             {exercise.name}
@@ -279,7 +279,7 @@ export const ExerciseCard = ({
           animate={{ rotate: isOpen ? 180 : 0 }}
           className={cn(
             "rounded-full border-2 border-black p-1 bg-white shrink-0",
-            isCompleted && "border-neutral-400 bg-transparent"
+            isCompleted && "border-neutral-400 bg-transparent",
           )}
         >
           <ChevronDown className="h-5 w-5 stroke-[3]" />
@@ -307,7 +307,7 @@ export const ExerciseCard = ({
                     <div
                       className={cn(
                         "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-black shadow-[1px_1px_0px_0px_#000] transition-colors",
-                        isTodayLog ? "bg-[#B8FF9F]" : "bg-neutral-200"
+                        isTodayLog ? "bg-[#B8FF9F]" : "bg-neutral-200",
                       )}
                     >
                       {isTodayLog ? (
@@ -395,6 +395,27 @@ export const ExerciseCard = ({
                 </div>
               )}
 
+              {exercise.target && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  className="flex items-center gap-3 rounded-xl border-2 border-black bg-[#FF5555] p-2.5 shadow-[3px_3px_0px_0px_#000]"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-black bg-white shadow-[1px_1px_0px_0px_#000]">
+                    <Goal className="h-5 w-5 stroke-[2.5] text-black" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#590000] leading-none">
+                      Focus Area
+                    </span>
+                    <span className="mt-0.5 text-sm font-black uppercase leading-none text-white tracking-tight drop-shadow-[1px_1px_0px_rgba(0,0,0,1)]">
+                      {exercise.target}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+
               <div className="space-y-1.5">
                 <div className="flex rounded-lg border-2 border-black bg-white p-0.5 shadow-[1px_1px_0px_0px_#000]">
                   <TabButton
@@ -421,7 +442,7 @@ export const ExerciseCard = ({
                   layout
                   className={cn(
                     "relative w-full overflow-hidden rounded-lg border-[3px] border-black bg-black",
-                    mediaAspectRatio
+                    mediaAspectRatio,
                   )}
                 >
                   {tab !== "Impact" ? (
@@ -464,7 +485,7 @@ export const ExerciseCard = ({
                                     "h-2 w-2 rounded-full transition-all border border-black/50",
                                     idx === mediaIndex
                                       ? "bg-[#B8FF9F] w-4"
-                                      : "bg-white/70 hover:bg-white"
+                                      : "bg-white/70 hover:bg-white",
                                   )}
                                 />
                               ))}
@@ -686,7 +707,7 @@ const Badge = ({ text, color }: { text: string; color: string }) => (
   <span
     className={cn(
       "rounded-md border-2 border-black px-1.5 py-0.5 text-[10px] font-black text-black shadow-[1px_1px_0px_0px_#000] whitespace-nowrap",
-      color
+      color,
     )}
   >
     {text}
@@ -700,7 +721,7 @@ const TabButton = ({ isActive, onClick, icon: Icon, label }: any) => (
       "flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-[10px] font-black uppercase transition-all",
       isActive
         ? "bg-black text-[#B8FF9F] shadow-sm"
-        : "bg-transparent text-black hover:bg-neutral-100"
+        : "bg-transparent text-black hover:bg-neutral-100",
     )}
   >
     <Icon className={cn("w-3.5 h-3.5", isActive ? "fill-[#B8FF9F]" : "")} />
