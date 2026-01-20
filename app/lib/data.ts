@@ -388,41 +388,41 @@ export const MOCK_WORKOUT_PLAN: WorkoutPlan = {
       },
 
       {
-        id: "tr-2",
-        name: "Skull Crusher (EZ Bar)",
+        id: "tr-new-1",
+        name: "Seated Overhead Dumbbell Extension",
         reps: "10-12",
         sets: "3 sets",
         category: "Triceps",
-        note: "📏 EXERCISE 5. LONG HEAD. Makes the arm look huge from the side.",
+        note: "📏 LONG HEAD. Replaces Skull Crusher. Safer for elbows.",
         tips: [
-          "Elbows pointing up",
-          "Lower bar to forehead",
-          "Do not swing shoulders",
+          "Sit on a bench with back support",
+          "Hold ONE heavy dumbbell with BOTH hands",
+          "Lower it behind your head, then press up to the ceiling",
         ],
         image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Triceps-Extension.gif",
-          "https://fitnessprogramer.com/wp-content/uploads/2021/06/Dumbbell-Skull-Crusher.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/06/Seated-Dumbbell-Triceps-Extension.gif",
         ],
-        video: [
-          "https://youtube.com/embed/K3mFeNz4e3w?si=A1TDG_1EpuINXIwY",
-          "https://youtube.com/embed/EXUdJH-lhKc?si=Z1U-Jgke-inj2xv3",
-        ],
-        impact: ["Tricep Belly", "Arm Size"],
+        video: ["https://youtube.com/embed/b_r_LW4HEcM?si=Wfkv8SIphpyTCuHH"],
+        impact: ["Big Arm Look (Side View)"],
       },
-
       {
-        id: "tr-3",
-        name: "Triceps Rope Pushdown",
+        id: "tr-new-2",
+        name: "Tricep Machine Press (or Bench Dips)",
         reps: "12-15",
         sets: "3 sets",
         category: "Triceps",
-        note: "🏁 EXERCISE 6. FINISHER. Burn out the muscle.",
-        tips: ["Elbows glued to ribs", "Spread rope at bottom", "Squeeze hard"],
-        image: [
-          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Pushdown.gif",
+        note: "🏁 FINISHER. Replaces Rope Pushdown. Pure isolation.",
+        tips: [
+          "Sit in the machine and push handles down",
+          "OR: Put hands on a bench and dip your body down",
+          "Burn it out until you can't move",
         ],
-        video: ["https://youtube.com/embed/1FjkhpZsaxc?si=UeI7YtnLqsvk9JP4"],
-        impact: ["Tricep Definition", "Horseshoe Look"],
+        image: [
+          "https://fitnessprogramer.com/wp-content/uploads/2021/04/Lever-Overhand-Triceps-Dip.gif",
+          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Bench-Dips.gif",
+        ],
+        video: ["https://youtube.com/embed/QYktfOJRyfU?si=m2j1DK6La4ItPT3s"],
+        impact: ["Horseshoe Definition"],
       },
     ],
 
